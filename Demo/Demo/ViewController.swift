@@ -29,7 +29,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         arrImgIcon = ["airplane-symbol.png", "eight-8-ball.png", "sailboat-symbol.png", "ship-symbol.png", "speedboat-emoji.png", "airplane-symbol.png", "eight-8-ball.png", "sailboat-symbol.png", "ship-symbol.png", "speedboat-emoji.png"]
         arrLblName = ["Ngoc Trinh", "Phuong Trinh", "Kieu Trinh", "Hap Trinh", "Thinh Trinh", "Ngoc Trinh", "Phuong Trinh", "Kieu Trinh", "Hap Trinh", "Thinh Trinh"]
         arrLblTime = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-        arrAction = ["vua di xem da bong ve", "thich mot anh ma ban vua dang", "vua dang nhap vao facebook", "dang di bat pokemon go", "ahihi do cho lam sao de no dai ra bay gio", "vua di xem da bong ve", "thich mot anh ma ban vua dang", "vua dang nhap vao facebook", "dang di bat pokemon go", "ahihi do cho lam sao de no dai ra bay gio"]
+        arrAction = ["vua di xem da bong ve", "thich mot anh ma ban vua dang", "vua dang nhap vao facebook", "dang di bat pokemon go", "ahihi do cho lam sao de no dai ra bay gio", "vua di xem da bong ve", "thich mot anh ma ban vua dang", "vua dang nhap vao facebook", "dang di bat pokemon go", "ahihi do cho lam sao de no dai ra bay gio ahihi do cho lam sao de no dai ra bay gio ahihi do cho lam sao de no dai ra bay gio ahihi do cho lam sao de no dai ra bay gio"]
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 153
     }
 
     override func didReceiveMemoryWarning() {
