@@ -10,6 +10,8 @@ import UIKit
 
 class DemoTableViewCell: UITableViewCell {
     
+    @IBOutlet var trailingWidthSuperView: NSLayoutConstraint!
+    
     @IBOutlet var imgAvatar: UIImageView!
     @IBOutlet var imgRight: UIImageView!
     @IBOutlet var lblName: UILabel!
