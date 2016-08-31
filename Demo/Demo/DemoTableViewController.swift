@@ -27,7 +27,7 @@ class DemoTableViewController: UITableViewController {
         arrItem.append(ItemModel.init(avt: "4.png", name: "Mat Trinh", act: "ban tay yeu duoi niu giu em o lai", tm: 2, ic: "ship-symbol.png", imgR: "nhatrang.jpg"))
         arrItem.append(ItemModel.init(avt: "5.png", name: "Con Trinh", act: "em di xa qua em di xa anh qua chac ai do cung se quay ve thoi chac ai do cung se quay lai thoi", tm: 1, ic: "speedboat-emoji.png", imgR: ""))
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 100
+        tableView.estimatedRowHeight = 10
     }
     
     override func didReceiveMemoryWarning() {
@@ -76,4 +76,11 @@ class DemoTableViewController: UITableViewController {
         return cell
     }
     
+}
+extension NSLayoutConstraint {
+    
+    override public var description: String {
+        let id = identifier ?? ""
+        return "id: \(id), constant: \(constant)" //you may print whatever you want here
+    }
 }
