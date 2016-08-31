@@ -19,7 +19,7 @@ class DemoTableViewController: UITableViewController {
         arrItem.append(ItemModel.init(avt: "1.png", name: "Ngoc Trinh", act: "anh tim noi nho", tm: 10, ic: "airplane-symbol.png", imgR: "danang.jpg"))
         arrItem.append(ItemModel.init(avt: "2.png", name: "Phuong Trinh", act: "nho lam ky uc anh va", tm: 9, ic: "eight-8-ball.png", imgR: ""))
         arrItem.append(ItemModel.init(avt: "3.png", name: "Kieu Trinh", act: "tra lai anh yeu thuong ay em se bay ve noi dau", tm: 8, ic: "sailboat-symbol.png", imgR: "hochiminh.jpg"))
-        arrItem.append(ItemModel.init(avt: "4.png", name: "Mat Trinh", act: "ban tay yeu duoi niu giu em o lai", tm: 7, ic: "ship-symbol.png", imgR: "nhatrang.jpg"))
+        arrItem.append(ItemModel.init(avt: "4.png", name: "Na Trinh", act: "ban tay yeu duoi niu giu em o lai", tm: 7, ic: "ship-symbol.png", imgR: "nhatrang.jpg"))
         arrItem.append(ItemModel.init(avt: "5.png", name: "Con Trinh", act: "em di xa qua em di xa anh qua chac ai do cung se quay ve thoi chac ai do cung se quay lai thoi", tm: 6, ic: "speedboat-emoji.png", imgR: "yenbai.jpg"))
         arrItem.append(ItemModel.init(avt: "1.png", name: "Ngoc Trinh", act: "anh tim noi nho anh tim qua khu", tm: 5, ic: "airplane-symbol.png", imgR: "danang.jpg"))
         arrItem.append(ItemModel.init(avt: "2.png", name: "Phuong Trinh", act: "nho lam ky uc anh va em", tm: 4, ic: "eight-8-ball.png", imgR: ""))
@@ -75,7 +75,7 @@ class DemoTableViewController: UITableViewController {
         
         return cell
     }
-    
+
 }
 extension NSLayoutConstraint {
     
