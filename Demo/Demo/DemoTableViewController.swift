@@ -10,24 +10,24 @@ import UIKit
 
 class DemoTableViewController: UITableViewController {
     
-    var arrItem:[ItemModel] = []
+    var arrItem: [ItemModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        arrItem.append(ItemModel.init(avt: "1.png", name: "Ngoc Trinh", act: "anh tim noi nho anh tim qua khu", tm: 10, ic: "airplane-symbol.png", imgR: "danang.jpg"))
-        arrItem.append(ItemModel.init(avt: "2.png", name: "Phuong Trinh", act: "nho lam ky uc anh va em", tm: 9, ic: "eight-8-ball.png", imgR: ""))
+        arrItem.append(ItemModel.init(avt: "1.png", name: "Ngoc Trinh", act: "anh tim noi nho", tm: 10, ic: "airplane-symbol.png", imgR: "danang.jpg"))
+        arrItem.append(ItemModel.init(avt: "2.png", name: "Phuong Trinh", act: "nho lam ky uc anh va", tm: 9, ic: "eight-8-ball.png", imgR: ""))
         arrItem.append(ItemModel.init(avt: "3.png", name: "Kieu Trinh", act: "tra lai anh yeu thuong ay em se bay ve noi dau", tm: 8, ic: "sailboat-symbol.png", imgR: "hochiminh.jpg"))
         arrItem.append(ItemModel.init(avt: "4.png", name: "Mat Trinh", act: "ban tay yeu duoi niu giu em o lai", tm: 7, ic: "ship-symbol.png", imgR: "nhatrang.jpg"))
         arrItem.append(ItemModel.init(avt: "5.png", name: "Con Trinh", act: "em di xa qua em di xa anh qua chac ai do cung se quay ve thoi chac ai do cung se quay lai thoi", tm: 6, ic: "speedboat-emoji.png", imgR: "yenbai.jpg"))
         arrItem.append(ItemModel.init(avt: "1.png", name: "Ngoc Trinh", act: "anh tim noi nho anh tim qua khu", tm: 5, ic: "airplane-symbol.png", imgR: "danang.jpg"))
         arrItem.append(ItemModel.init(avt: "2.png", name: "Phuong Trinh", act: "nho lam ky uc anh va em", tm: 4, ic: "eight-8-ball.png", imgR: ""))
-        arrItem.append(ItemModel.init(avt: "3.png", name: "Kieu Trinh", act: "tra lai anh yeu thuong ay em se bay ve noi dau", tm: 3, ic: "sailboat-symbol.png", imgR: "hochiminh.jpg"))
+        arrItem.append(ItemModel.init(avt: "3.png", name: "Kieu Trinh", act: "tra lai anh yeu", tm: 3, ic: "sailboat-symbol.png", imgR: "hochiminh.jpg"))
         arrItem.append(ItemModel.init(avt: "4.png", name: "Mat Trinh", act: "ban tay yeu duoi niu giu em o lai", tm: 2, ic: "ship-symbol.png", imgR: "nhatrang.jpg"))
         arrItem.append(ItemModel.init(avt: "5.png", name: "Con Trinh", act: "em di xa qua em di xa anh qua chac ai do cung se quay ve thoi chac ai do cung se quay lai thoi", tm: 1, ic: "speedboat-emoji.png", imgR: ""))
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 113
+        tableView.estimatedRowHeight = 100
     }
     
     override func didReceiveMemoryWarning() {
@@ -57,19 +57,23 @@ class DemoTableViewController: UITableViewController {
         cell.lblTime.text = String(data.time) + " mins ago"
         cell.imgIcon.image = UIImage.init(named: data.icon)
         
-        let myAttrubute = [NSFontAttributeName: UIFont.boldSystemFontOfSize(17)]
+        // set lblName in dam phan ten
+        let myAttrubute = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)]
         let myString = NSMutableAttributedString(string: data.username, attributes: myAttrubute)
         let attrString = NSAttributedString(string: " " + data.action)
         myString.appendAttributedString(attrString)
         cell.lblName.attributedText = myString
         
+        // set auto layout cho lblName doi voi superView va imgRight
         if cell.imgRight.image == nil {
-            cell.trailingWidthSuperView.priority = UILayoutPriorityDefaultHigh + 1
+            cell.lblNameTrailingWithImgRight.active = false
+            cell.lblNameTrailingWithSuperView.active = true
         } else {
-            cell.trailingWidthSuperView.priority = UILayoutPriorityDefaultHigh
+            cell.lblNameTrailingWithImgRight.active = true
+            cell.lblNameTrailingWithSuperView.active = false
         }
         
         return cell
     }
-
+    
 }
