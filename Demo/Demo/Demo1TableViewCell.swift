@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DemoTableViewCell: UITableViewCell {
+class Demo1TableViewCell: UITableViewCell {
     
     @IBOutlet var imgAvatar: UIImageView!
     @IBOutlet var lblName: UILabel!
@@ -19,13 +19,13 @@ class DemoTableViewCell: UITableViewCell {
     @IBOutlet var lblLike: UILabel!
     @IBOutlet var lblConversation: UILabel!
     @IBOutlet var lblShare: UILabel!
-    @IBOutlet var lblTextBottomWithProtocol: NSLayoutConstraint!
-    @IBOutlet var lblTextBottomWithImgImage: NSLayoutConstraint!
-    @IBOutlet var imgImageTopWithImgAvatar: NSLayoutConstraint!
     @IBOutlet var imgLike: UIImageView!
     @IBOutlet var imgConversation: UIImageView!
     @IBOutlet var imgShare: UIImageView!
-
+    @IBOutlet var lblTextBottomWithImgConversation: NSLayoutConstraint!
+    @IBOutlet var lblTextBottomWithImgImage: NSLayoutConstraint!
+    @IBOutlet var imgImageTopWithImgAvatar: NSLayoutConstraint!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -45,12 +45,21 @@ class DemoTableViewCell: UITableViewCell {
         imgLike.image = UIImage(named: "Heart.png")
         imgConversation.image = UIImage(named: "Conversation.png")
         imgShare.image = UIImage(named: "share.png")
+        
+        //
+        imgImage.contentMode = UIViewContentMode.ScaleAspectFit
+        
+        //
+        lblTime.font = UIFont(name: "HelveticaNeue", size: 14)
+        lblLike.font = UIFont(name: "HelveticaNeue", size: 14)
+        lblConversation.font = UIFont(name: "HelveticaNeue", size: 14)
+        lblShare.font = UIFont(name: "HelveticaNeue", size: 14)
     }
-
+    
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-
+    
 }

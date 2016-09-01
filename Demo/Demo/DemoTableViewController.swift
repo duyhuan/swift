@@ -10,11 +10,17 @@ import UIKit
 
 class DemoTableViewController: UITableViewController {
     
+    @IBOutlet var lblNotification: UILabel!
+    
     var arrItem: [ItemModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        lblNotification.textColor = UIColor.whiteColor()
+        lblNotification.font = UIFont(name: "HelveticaNueu", size: 18)
+        lblNotification.font = UIFont.boldSystemFontOfSize(18)
         
         arrItem.append(ItemModel.init(avt: "1.png", name: "Ngoc Trinh", act: "anh tim noi nho", tm: 10, ic: "airplane-symbol.png", imgR: "danang.jpg"))
         arrItem.append(ItemModel.init(avt: "2.png", name: "Phuong Trinh", act: "nho lam ky uc anh va", tm: 9, ic: "eight-8-ball.png", imgR: ""))

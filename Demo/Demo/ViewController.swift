@@ -13,11 +13,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet var txtvText: UITextView!
     @IBOutlet var myAvatar: UIImageView!
     @IBOutlet var tableView: UITableView!
-    let placeHolderLabel = UILabel()
     @IBOutlet var imgCamera: UIImageView!
+    let placeHolderLabel = UILabel()
     
-    var arrItem: [ItemModel] = []
-
+    var arrItem: [DemoItemModel] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -37,16 +37,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //
         imgCamera.image = UIImage(named: "camera.png")
         
-        arrItem.append(ItemModel.init(avt: "1.png", nm: "Phuong Trinh", tm: "10 hours ago", ic: "location.png", tx: "", img: "danang.jpg"))
-        arrItem.append(ItemModel.init(avt: "2.png", nm: "Ngoc Trinh", tm: "9 hours ago", ic: "location.png", tx: "Co biet chang noi day anh van dung doi", img: ""))
-        arrItem.append(ItemModel.init(avt: "3.png", nm: "Kieu Trinh", tm: "8 hours ago", ic: "location.png", tx: "", img: "hochiminh.jpg"))
-        arrItem.append(ItemModel.init(avt: "4.png", nm: "Con Trinh", tm: "7 hours ago", ic: "location.png", tx: "Cam bong hoa tren tay nuoc mat roi", img: ""))
-        arrItem.append(ItemModel.init(avt: "5.png", nm: "Mat Trinh", tm: "6 hours ago", ic: "location.png", tx: "Anh nho em", img: "yenbai.jpg"))
-        arrItem.append(ItemModel.init(avt: "1.png", nm: "Phuong Trinh", tm: "10 hours ago", ic: "location.png", tx: "", img: "danang.jpg"))
-        arrItem.append(ItemModel.init(avt: "2.png", nm: "Ngoc Trinh", tm: "9 hours ago", ic: "location.png", tx: "Co biet chang noi day anh van dung doi", img: ""))
-        arrItem.append(ItemModel.init(avt: "3.png", nm: "Kieu Trinh", tm: "8 hours ago", ic: "location.png", tx: "", img: "hochiminh.jpg"))
-        arrItem.append(ItemModel.init(avt: "4.png", nm: "Con Trinh", tm: "7 hours ago", ic: "location.png", tx: "Cam bong hoa tren tay nuoc mat roi", img: ""))
-        arrItem.append(ItemModel.init(avt: "5.png", nm: "Mat Trinh", tm: "6 hours ago", ic: "location.png", tx: "Anh nho em", img: "yenbai.jpg"))
+        arrItem.append(DemoItemModel.init(avt: "1.png", nm: "Phuong Trinh", tm: "10 hours ago", ic: "location.png", tx: "", img: "danang.jpg", like: "Like"))
+        arrItem.append(DemoItemModel.init(avt: "2.png", nm: "Ngoc Trinh", tm: "9 hours ago", ic: "location.png", tx: "Co biet chang noi day anh van dung doi", img: "", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "3.png", nm: "Kieu Trinh", tm: "8 hours ago", ic: "location.png", tx: "", img: "hochiminh.jpg", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "4.png", nm: "Con Trinh", tm: "7 hours ago", ic: "location.png", tx: "Cam bong hoa tren tay nuoc mat roi", img: "", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "5.png", nm: "Mat Trinh", tm: "6 hours ago", ic: "location.png", tx: "Anh nho em", img: "yenbai.jpg", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "1.png", nm: "Phuong Trinh", tm: "10 hours ago", ic: "location.png", tx: "", img: "danang.jpg", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "2.png", nm: "Ngoc Trinh", tm: "9 hours ago", ic: "location.png", tx: "Co biet chang noi day anh van dung doi", img: "", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "3.png", nm: "Kieu Trinh", tm: "8 hours ago", ic: "location.png", tx: "", img: "hochiminh.jpg", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "4.png", nm: "Con Trinh", tm: "7 hours ago", ic: "location.png", tx: "Cam bong hoa tren tay nuoc mat roi", img: "", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "5.png", nm: "Mat Trinh", tm: "6 hours ago", ic: "location.png", tx: "Anh nho em", img: "yenbai.jpg", like: "2 Likes"))
         
         // Set label placeHolder for txtvText
         let placeHolderLabelX: CGFloat = 5
@@ -60,26 +60,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         placeHolderLabel.textColor = UIColor.lightGrayColor()
         txtvText.addSubview(placeHolderLabel)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrItem.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! DemoTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! Demo1TableViewCell
+        
         let data = arrItem[indexPath.row]
+        
         cell.imgAvatar.image = UIImage(named: data.avatar)
         cell.lblName.text = data.name
         cell.lblTime.text = data.time
         cell.imgIcon.image = UIImage(named: data.icon)
         cell.lblText.text = data.text
         cell.imgImage.image = UIImage(named: data.image)
-        
+        cell.lblLike.text = data.numberOfLike
         
         // set lblName bold
         let myAttrubute = [NSFontAttributeName: UIFont.boldSystemFontOfSize(16)]
@@ -90,14 +92,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if cell.imgImage.image == nil && cell.lblText.text != nil {
             cell.lblTextBottomWithImgImage.active = false
             cell.imgImageTopWithImgAvatar.active = false
-            cell.lblTextBottomWithProtocol.active = true
+            cell.lblTextBottomWithImgConversation.active = true
         } else if cell.imgImage.image != nil && cell.lblText.text == nil {
-            cell.lblTextBottomWithProtocol.active = false
-            cell.lblTextBottomWithProtocol.active = false
+            cell.lblTextBottomWithImgConversation.active = false
+            cell.lblTextBottomWithImgImage.active = false
             cell.imgImageTopWithImgAvatar.active = true
         } else if cell.imgImage.image != nil && cell.lblText.text != nil {
             cell.imgImageTopWithImgAvatar.active = false
-            cell.lblTextBottomWithProtocol.active = false
+            cell.lblTextBottomWithImgConversation.active = false
             cell.lblTextBottomWithImgImage.active = true
         }
         
