@@ -47,7 +47,6 @@ class Demo1TableViewCell: UITableViewCell {
         imgShare.image = UIImage(named: "share.png")
         
         //
-        imgImage.contentMode = UIViewContentMode.ScaleAspectFit
         
         //
         lblTime.font = UIFont(name: "HelveticaNeue", size: 14)

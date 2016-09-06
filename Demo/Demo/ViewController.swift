@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  DemoTableView2
 //
-//  Created by huan huan on 8/31/16.
+//  Created by   huan on 8/31/16.
 //  Copyright © 2016 Duy Huan. All rights reserved.
 //
 
@@ -46,7 +46,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         arrItem.append(DemoItemModel.init(avt: "2.png", nm: "Ngoc Trinh", tm: "9 hours ago", ic: "location.png", tx: "Co biet chang noi day anh van dung doi", img: "", like: "2 Likes"))
         arrItem.append(DemoItemModel.init(avt: "3.png", nm: "Kieu Trinh", tm: "8 hours ago", ic: "location.png", tx: "", img: "hochiminh.jpg", like: "2 Likes"))
         arrItem.append(DemoItemModel.init(avt: "4.png", nm: "Con Trinh", tm: "7 hours ago", ic: "location.png", tx: "Cam bong hoa tren tay nuoc mat roi", img: "", like: "2 Likes"))
-        arrItem.append(DemoItemModel.init(avt: "5.png", nm: "Mat Trinh", tm: "6 hours ago", ic: "location.png", tx: "Anh nho em", img: "yenbai.jpg", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "5.png", nm: "Mat Trinh", tm: "6 hours ago", ic: "location.png", tx: "Anh nho em", img: "1.png", like: "2 Likes"))
         
         // Set label placeHolder for txtvText
         let placeHolderLabelX: CGFloat = 5
@@ -58,6 +58,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         placeHolderLabel.text = "What do you fancy or think?"
         placeHolderLabel.font = UIFont(name: "HelveticaNeue", size: placeHolderLabelFontSize)
         placeHolderLabel.textColor = UIColor.lightGrayColor()
+        placeHolderLabel.adjustsFontSizeToFitWidth = true
         txtvText.addSubview(placeHolderLabel)
     }
     
@@ -117,4 +118,5 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
 }
+
 
