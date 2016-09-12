@@ -22,7 +22,6 @@ class DemoViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.dataSource = self
         
         segmentdControl.tintColor = UIColor.whiteColor()
-        segmentdControl.
         
         arrItem.append(Table3.init(avt: "1.png", name: "Phuong Trinh", mutual: "0 mutual friends"))
         arrItem.append(Table3.init(avt: "2.png", name: "Ngoc Trinh", mutual: "0 mutual friends"))
@@ -30,6 +29,9 @@ class DemoViewController: UIViewController, UITableViewDelegate, UITableViewData
         arrItem.append(Table3.init(avt: "2.png", name: "Ngoc Trinh", mutual: "0 mutual friends"))
         arrItem.append(Table3.init(avt: "1.png", name: "Phuong Trinh", mutual: "0 mutual friends"))
         arrItem.append(Table3.init(avt: "2.png", name: "Ngoc Trinh", mutual: "0 mutual friends"))
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 300
     }
 
     override func didReceiveMemoryWarning() {

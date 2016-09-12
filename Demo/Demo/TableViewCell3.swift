@@ -25,6 +25,8 @@ class TableViewCell3: UITableViewCell, UICollectionViewDelegate, UICollectionVie
         arrItem.append(Table3.init(avt: "2.png", name: "Ngoc Trinh", mutual: "0 mutual friends"))
         arrItem.append(Table3.init(avt: "1.png", name: "Phuong Trinh", mutual: "0 mutual friends"))
         arrItem.append(Table3.init(avt: "2.png", name: "Ngoc Trinh", mutual: "0 mutual friends"))
+        
+        
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -47,6 +49,8 @@ class TableViewCell3: UITableViewCell, UICollectionViewDelegate, UICollectionVie
         cell.lblMunutalFriend.text = data.mutualFriend
         cell.btnAdd.setTitle("+ Add", forState: .Normal)
         cell.btnAdd.layer.cornerRadius = 5
+        cell.contentView.frame = cell.bounds
+        cell.contentView.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
         return cell
     }
 
