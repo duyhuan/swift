@@ -49,8 +49,8 @@ class TableViewCell3: UITableViewCell, UICollectionViewDelegate, UICollectionVie
         cell.lblMunutalFriend.text = data.mutualFriend
         cell.btnAdd.setTitle("+ Add", forState: .Normal)
         cell.btnAdd.layer.cornerRadius = 5
-        cell.contentView.frame = cell.bounds
-        cell.contentView.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
+//        cell.contentView.frame = cell.bounds
+//        cell.contentView.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
         return cell
     }
 

@@ -38,7 +38,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         imgCamera.image = UIImage(named: "camera.png")
         
         arrItem.append(DemoItemModel.init(avt: "1.png", nm: "Phuong Trinh", tm: "10 hours ago", ic: "location.png", tx: "", img: "danang.jpg", like: "Like"))
-        arrItem.append(DemoItemModel.init(avt: "2.png", nm: "Ngoc Trinh", tm: "9 hours ago", ic: "location.png", tx: "Co biet chang noi day anh van dung doi", img: "", like: "2 Likes"))
+        arrItem.append(DemoItemModel.init(avt: "2.png", nm: "Ngoc Trinh", tm: "9 hours ago", ic: "location.png", tx: "Co biet chang noi day anh van dung doi Co biet chang noi day anh van dung doi Co biet chang noi day anh van dung doi Co biet chang noi day anh van dung doi", img: "", like: "2 Likes"))
         arrItem.append(DemoItemModel.init(avt: "3.png", nm: "Kieu Trinh", tm: "8 hours ago", ic: "location.png", tx: "", img: "hochiminh.jpg", like: "2 Likes"))
         arrItem.append(DemoItemModel.init(avt: "4.png", nm: "Con Trinh", tm: "7 hours ago", ic: "location.png", tx: "Cam bong hoa tren tay nuoc mat roi", img: "", like: "2 Likes"))
         arrItem.append(DemoItemModel.init(avt: "5.png", nm: "Mat Trinh", tm: "6 hours ago", ic: "location.png", tx: "Anh nho em", img: "yenbai.jpg", like: "2 Likes"))
