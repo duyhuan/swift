@@ -7,14 +7,27 @@
 //
 
 import UIKit
+//import FBSDKLoginKit
+//import FBSDKCoreKit
+//import FBSDKShareKit
+import Social
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, DataEnterDelegate {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @IBOutlet var imageView: UIImageView!
-    @IBOutlet var label: UILabel!
+    let txtv:UITextView = UITextView()
+    let panGesture1:UIPanGestureRecognizer = UIPanGestureRecognizer()
+    let pinchGesture:UIPinchGestureRecognizer = UIPinchGestureRecognizer()
     
     let imagePicker = UIImagePickerController()
     
+    @IBAction func btn(sender: AnyObject) {
+        let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+        composeSheet.setInitialText("Hello, Facebook!")
+        composeSheet.addImage(imageView.image)
+        
+        presentViewController(composeSheet, animated: true, completion: nil)
+    }
     
     @IBAction func loadImageButtonTapped(sender: UIButton) {
         imagePicker.allowsEditing = false
@@ -27,7 +40,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         super.viewDidLoad()
         
         imagePicker.delegate = self
+        panGesture1.addTarget(self, action: #selector(ViewController.panGesture(_:)))
+        txtv.addGestureRecognizer(panGesture1)
+        
+        pinchGesture.addTarget(self, action: #selector(ViewController.pinchGesture(_:)))
+        txtv.addGestureRecognizer(pinchGesture)
+    }
     
+    func pinchGesture(sender: UIPinchGestureRecognizer) {
+        txtv.transform = CGAffineTransformMakeScale(sender.scale, sender.scale)
+
     }
     
     // MARK: - UIImagePickerControllerDelegate Methods
@@ -48,25 +70,30 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func userDidEnterInfomation(info: NSString) {
         label.text = info as String
     }
-    
-    //truyen bien thong qua segue
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "showSecondVC" {
-            let secondVC:ViewController2 = segue.destinationViewController as! ViewController2
-            secondVC.delegate = self
-        }
-    }
 
     @IBAction func btnSaveClicked(sender: AnyObject) {
         UIGraphicsBeginImageContext(imageView.frame.size)
         view.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        
         let image = UIGraphicsGetImageFromCurrentImageContext()
+        
         UIGraphicsEndImageContext()
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        imageView.image = image
+        txtv.removeFromSuperview()
     }
     
+    func panGesture(sender: UIPanGestureRecognizer) {
+        let translation = sender.translationInView(self.view)
+        sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
+        sender.setTranslation(CGPointZero, inView: view)
+    }
     
-    
-    
+    @IBAction func tapGesture(sender: UITapGestureRecognizer) {
+        let point:CGPoint = sender.locationInView(imageView)
+        txtv.frame =  CGRect(x: point.x, y: point.y, width: 50, height: 30)
+        txtv.backgroundColor = UIColor.clearColor()
+        imageView.addSubview(txtv)
+    }
     
 }
