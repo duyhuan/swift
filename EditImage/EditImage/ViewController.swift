@@ -66,10 +66,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
     }
-    
-    func userDidEnterInfomation(info: NSString) {
-        label.text = info as String
-    }
 
     @IBAction func btnSaveClicked(sender: AnyObject) {
         UIGraphicsBeginImageContext(imageView.frame.size)
