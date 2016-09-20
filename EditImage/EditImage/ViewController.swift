@@ -160,7 +160,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         UIImage(named: data.image)?.drawInRect(self.myView.bounds)
         let imageView = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        self.myView.backgroundColor = UIColor(patternImage: imageView)
+        self.imageView.backgroundColor = UIColor(patternImage: imageView)
     }
     
 }
