@@ -9,12 +9,13 @@
 import UIKit
 import Social
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate {
     
     @IBOutlet var imageView: UIImageView!
-    let txtv:UITextView = UITextView()
-    let panGesture1:UIPanGestureRecognizer = UIPanGestureRecognizer()
-    let pinchGesture:UIPinchGestureRecognizer = UIPinchGestureRecognizer()
+    var txtv:UITextView = UITextView()
+    let panGesture:UIPanGestureRecognizer = UIPanGestureRecognizer()
+    let tapGesture:UITapGestureRecognizer = UITapGestureRecognizer()
+    let tapGesture1:UITapGestureRecognizer = UITapGestureRecognizer()
     @IBOutlet var collectionView: UICollectionView!
     
     let imagePicker = UIImagePickerController()
@@ -44,11 +45,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         super.viewDidLoad()
         
         imagePicker.delegate = self
-        panGesture1.addTarget(self, action: #selector(ViewController.panGesture(_:)))
-        txtv.addGestureRecognizer(panGesture1)
         
-        pinchGesture.addTarget(self, action: #selector(ViewController.pinchGesture(_:)))
-        txtv.addGestureRecognizer(pinchGesture)
+        txtv.delegate = self
+        
+        tapGesture.addTarget(self, action: #selector(ViewController.tapGesture(_:)))
+        tapGesture.numberOfTapsRequired = 2
+        imageView.addGestureRecognizer(tapGesture)
+        
+        tapGesture1.addTarget(self, action: #selector(ViewController.tapGesture1(_:)))
+        imageView.addGestureRecognizer(tapGesture1)
         
         pickerView.delegate = self
         pickerView.dataSource = self
@@ -61,10 +66,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         arrImage.append(ItemModel.init(img: "3.jpg"))
         arrImage.append(ItemModel.init(img: "4.jpg"))
         arrImage.append(ItemModel.init(img: "5.jpg"))
-    }
-    
-    func pinchGesture(sender: UIPinchGestureRecognizer) {
-        txtv.transform = CGAffineTransformMakeScale(sender.scale, sender.scale)
 
     }
     
@@ -90,21 +91,29 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-        imageView.image = image
+        //imageView.image = image
         txtv.removeFromSuperview()
+    }
+    
+    // MARK: Tap Create txtv
+    func tapGesture(sender: UITapGestureRecognizer) {
+        txtv = UITextView()
+        txtv.userInteractionEnabled = true
+        txtv.multipleTouchEnabled = true
+        txtv.delegate = self
+        txtv.becomeFirstResponder()
+        let point:CGPoint = sender.locationInView(imageView)
+        txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
+        txtv.backgroundColor = UIColor.redColor()
+        panGesture.addTarget(self, action: #selector(ViewController.panGesture(_:)))
+        txtv.addGestureRecognizer(panGesture)
+        imageView.addSubview(txtv)
     }
     
     func panGesture(sender: UIPanGestureRecognizer) {
         let translation = sender.translationInView(self.view)
         sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
         sender.setTranslation(CGPointZero, inView: view)
-    }
-    
-    @IBAction func tapGesture(sender: UITapGestureRecognizer) {
-        let point:CGPoint = sender.locationInView(imageView)
-        txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
-        txtv.backgroundColor = UIColor.clearColor()
-        imageView.addSubview(txtv)
     }
     
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
@@ -161,6 +170,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let imageView = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         self.imageView.backgroundColor = UIColor(patternImage: imageView)
+    }
+    
+    func textViewDidEndEditing(textView: UITextView) {
+        if textView.text == "" {
+            textView.removeFromSuperview()
+        }
+    }
+    
+    func tapGesture1(sender: UITapGestureRecognizer) {
+        txtv.endEditing(false)
     }
     
 }

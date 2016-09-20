@@ -65,9 +65,6 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="250" id="kqp-VL-83w"/>
                                         </constraints>
-                                        <connections>
-                                            <outletCollection property="gestureRecognizers" destination="vQu-Yb-mU2" appends="YES" id="fQ1-YN-2EF"/>
-                                        </connections>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PK7-h8-X0V">
                                         <rect key="frame" x="20" y="370" width="150" height="30"/>
@@ -149,12 +146,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="haE-cQ-diR"/>
-                <tapGestureRecognizer numberOfTapsRequired="2" id="vQu-Yb-mU2">
-                    <connections>
-                        <action selector="tapGesture:" destination="BYZ-38-t0r" id="VGw-Mq-8dZ"/>
-                    </connections>
-                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="220.5" y="317.5"/>
         </scene>
