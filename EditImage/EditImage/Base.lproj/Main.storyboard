@@ -102,16 +102,44 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="btn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bWF-Sj-TIp"/>
+                                            <action selector="btnShare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qeL-qT-XcI"/>
                                         </connections>
                                     </button>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FaU-eI-j1D">
                                         <rect key="frame" x="0.0" y="420" width="375" height="216"/>
                                     </pickerView>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="XHp-3v-ETM">
+                                        <rect key="frame" x="198" y="636" width="167" height="29"/>
+                                        <segments>
+                                            <segment title="Left"/>
+                                            <segment title="Center"/>
+                                            <segment title="Right"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="alignment:" destination="BYZ-38-t0r" eventType="valueChanged" id="FvY-68-77k"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="-0.5" maxValue="5.5" translatesAutoresizingMaskIntoConstraints="NO" id="uRS-sk-uwy">
+                                        <rect key="frame" x="3" y="636" width="124" height="31"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="120" id="7GG-Zf-ama"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="change:" destination="BYZ-38-t0r" eventType="valueChanged" id="mD4-bO-hML"/>
+                                        </connections>
+                                    </slider>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vlk-xF-jHR">
+                                        <rect key="frame" x="130" y="641" width="42" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="uRS-sk-uwy" firstAttribute="top" secondItem="FaU-eI-j1D" secondAttribute="bottom" id="0BJ-DE-iI4"/>
                                     <constraint firstItem="8KW-hj-JZM" firstAttribute="top" secondItem="cOR-TX-r1J" secondAttribute="top" id="2at-Vl-YL1"/>
+                                    <constraint firstItem="XHp-3v-ETM" firstAttribute="top" secondItem="FaU-eI-j1D" secondAttribute="bottom" id="4tI-gM-emN"/>
                                     <constraint firstAttribute="trailing" secondItem="FaU-eI-j1D" secondAttribute="trailing" id="5Ji-zH-xbq"/>
                                     <constraint firstItem="FaU-eI-j1D" firstAttribute="leading" secondItem="cOR-TX-r1J" secondAttribute="leading" id="5fL-77-InF"/>
                                     <constraint firstItem="IZp-dR-LJf" firstAttribute="top" secondItem="K2q-8p-f4b" secondAttribute="bottom" constant="20" id="7Ye-Jx-JcV"/>
@@ -120,9 +148,13 @@
                                     <constraint firstItem="FaU-eI-j1D" firstAttribute="top" secondItem="uJ0-u8-Jwq" secondAttribute="bottom" constant="20" id="IPz-Ax-tFp"/>
                                     <constraint firstItem="IZp-dR-LJf" firstAttribute="leading" secondItem="PK7-h8-X0V" secondAttribute="trailing" constant="35" id="JT7-kB-GOB"/>
                                     <constraint firstItem="uJ0-u8-Jwq" firstAttribute="top" secondItem="K2q-8p-f4b" secondAttribute="bottom" constant="20" id="M6e-WU-q7i"/>
+                                    <constraint firstAttribute="trailing" secondItem="XHp-3v-ETM" secondAttribute="trailing" constant="10" id="N9i-AD-deY"/>
                                     <constraint firstItem="PK7-h8-X0V" firstAttribute="top" secondItem="K2q-8p-f4b" secondAttribute="bottom" constant="20" id="NZK-VV-6Pk"/>
                                     <constraint firstAttribute="trailing" secondItem="8KW-hj-JZM" secondAttribute="trailing" id="SKL-gv-gWN"/>
+                                    <constraint firstItem="vlk-xF-jHR" firstAttribute="leading" secondItem="uRS-sk-uwy" secondAttribute="trailing" constant="5" id="WRj-sj-loU"/>
+                                    <constraint firstItem="vlk-xF-jHR" firstAttribute="top" secondItem="FaU-eI-j1D" secondAttribute="bottom" constant="5" id="XKv-Oo-ioO"/>
                                     <constraint firstItem="K2q-8p-f4b" firstAttribute="top" secondItem="8KW-hj-JZM" secondAttribute="bottom" id="af5-NB-9Cx"/>
+                                    <constraint firstItem="uRS-sk-uwy" firstAttribute="leading" secondItem="cOR-TX-r1J" secondAttribute="leading" constant="5" id="ayt-Qa-kmS"/>
                                     <constraint firstAttribute="trailing" secondItem="K2q-8p-f4b" secondAttribute="trailing" id="mWd-dd-qLe"/>
                                     <constraint firstItem="8KW-hj-JZM" firstAttribute="leading" secondItem="cOR-TX-r1J" secondAttribute="leading" id="p40-ii-j5Q"/>
                                     <constraint firstItem="K2q-8p-f4b" firstAttribute="leading" secondItem="cOR-TX-r1J" secondAttribute="leading" id="uZ1-sD-7Eb"/>
@@ -139,15 +171,21 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
+                        <outlet property="aligment" destination="XHp-3v-ETM" id="XcU-OI-zwf"/>
+                        <outlet property="btnChooseImage" destination="PK7-h8-X0V" id="Rbe-cr-bqa"/>
+                        <outlet property="btnSave" destination="IZp-dR-LJf" id="Yxi-ok-Gdp"/>
+                        <outlet property="btnShare" destination="uJ0-u8-Jwq" id="ZkA-Sl-Caw"/>
                         <outlet property="collectionView" destination="8KW-hj-JZM" id="ILr-ua-w9k"/>
                         <outlet property="imageView" destination="K2q-8p-f4b" id="t9J-ah-fc4"/>
+                        <outlet property="lbl" destination="vlk-xF-jHR" id="T9f-Gf-tFf"/>
                         <outlet property="myView" destination="cOR-TX-r1J" id="LNR-Z5-V0L"/>
                         <outlet property="pickerView" destination="FaU-eI-j1D" id="yu7-7S-WQc"/>
+                        <outlet property="slider" destination="uRS-sk-uwy" id="3Ns-Uh-pPf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="220.5" y="317.5"/>
+            <point key="canvasLocation" x="238.5" y="252.5"/>
         </scene>
     </scenes>
 </document>
