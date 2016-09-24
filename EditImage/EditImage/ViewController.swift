@@ -12,7 +12,7 @@ import Social
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate {
     
     var arrImage:[ItemModel] = []
-    
+    var arrTxtvLbl:[ArrayModel] = []
     
     @IBOutlet var imageView: UIImageView!
     
@@ -27,11 +27,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet var btnShare: UIButton!
     
     var txtv:UITextView = UITextView()
-    var arrTxtv:[UITextView] = []
+    var label:UILabel = UILabel()
     
+    let tapOnImageToCreateTextViewAndLabel:UITapGestureRecognizer = UITapGestureRecognizer()
     let panGesture:UIPanGestureRecognizer = UIPanGestureRecognizer()
-    let tapGesture:UITapGestureRecognizer = UITapGestureRecognizer()
-    let tapGesture1:UITapGestureRecognizer = UITapGestureRecognizer()
+    let tapOnLabelToEdit:UITapGestureRecognizer = UITapGestureRecognizer()
 
     let imagePicker = UIImagePickerController()
     
@@ -54,60 +54,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         presentViewController(imagePicker, animated: true, completion: nil)
     }
     
-    // MARK: Aligment TextView
-    
-    @IBOutlet var aligment: UISegmentedControl!
-    
-    @IBAction func alignment(sender: UISegmentedControl) {
-        switch aligment.selectedSegmentIndex {
-        case 0:
-            for i in 0..<arrTxtv.count {
-                if arrTxtv[i].tag == 1 {
-                    arrTxtv[i].textAlignment = NSTextAlignment.Left
-                }
-            }
-        case 1:
-            for i in 0..<arrTxtv.count {
-                if arrTxtv[i].tag == 1 {
-                    arrTxtv[i].textAlignment = NSTextAlignment.Center
-                }
-            }
-        case 2:
-            for i in 0..<arrTxtv.count {
-                if arrTxtv[i].tag == 1 {
-                    arrTxtv[i].textAlignment = NSTextAlignment.Right
-                }
-            }
-        default:
-            print("a")
-        }
-    }
-    
-    // MARK: Set TextView Font Size
-    @IBOutlet var lbl: UILabel!
-    @IBOutlet var slider: UISlider!
-    @IBAction func change(sender: UISlider) {
-        lbl.text = String(Int(slider.value))
-        for i in 0..<arrTxtv.count {
-            if arrTxtv[i].tag == 1  {
-                arrTxtv[i].font = arrTxtv[i].font!.fontWithSize(CGFloat(slider.value))
-            }
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         imagePicker.delegate = self
         
-        tapGesture.addTarget(self, action: #selector(ViewController.tapGesture(_:)))
-        tapGesture.numberOfTapsRequired = 2
-        imageView.addGestureRecognizer(tapGesture)
-        
-        tapGesture1.addTarget(self, action: #selector(ViewController.tapGesture1(_:)))
-        imageView.addGestureRecognizer(tapGesture1)
+        tapOnImageToCreateTextViewAndLabel.addTarget(self, action: #selector(ViewController.tapOnImageToCreateTextViewAndLabel(_:)))
+        tapOnImageToCreateTextViewAndLabel.numberOfTapsRequired = 2
+        imageView.addGestureRecognizer(tapOnImageToCreateTextViewAndLabel)
         
         panGesture.addTarget(self, action: #selector(ViewController.panGesture(_:)))
+        
+        tapOnLabelToEdit.addTarget(self, action: #selector(ViewController.tapOnLabelToEdit(_:)))
+        imageView.addGestureRecognizer(tapOnLabelToEdit)
         
         pickerView.delegate = self
         pickerView.dataSource = self
@@ -131,21 +90,101 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         lbl.text = "1"
     }
     
-    // MARK: - UIImagePickerControllerDelegate Methods
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imageView.contentMode = .ScaleAspectFit
-            imageView.image = pickedImage
-        }
+    // MARK: Tap Create txtv
+    func tapOnImageToCreateTextViewAndLabel(sender: UITapGestureRecognizer) {
+        let point:CGPoint = sender.locationInView(imageView)
+        txtv = UITextView()
+        label = UILabel()
         
-        dismissViewControllerAnimated(true, completion: nil)
+        txtv.scrollEnabled = false
+        txtv.backgroundColor = UIColor.redColor()
+        txtv.userInteractionEnabled = true
+        txtv.delegate = self
+        txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
+        txtv.becomeFirstResponder()
+        
+        label.backgroundColor = UIColor.blueColor()
+        label.userInteractionEnabled = true
+        label.multipleTouchEnabled = true
+        label.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
+        label.hidden = true
+        
+        arrTxtvLbl.append(ArrayModel.init(txtv: txtv, lbl: label))
+        
+        imageView.addSubview(txtv)
+        imageView.addSubview(label)
+        
+        for i in (0..<arrTxtvLbl.count).reverse() {
+            if point.x >= arrTxtvLbl[i].label.frame.origin.x && point.x <= arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width && point.y >= arrTxtvLbl[i].label.frame.origin.y && point.y <= arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height {
+                arrTxtvLbl[i].label.hidden = true
+                arrTxtvLbl[i].label.addGestureRecognizer(panGesture)
+                arrTxtvLbl[i].textView.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x
+                arrTxtvLbl[i].textView.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y
+                arrTxtvLbl[i].textView.hidden = false
+                arrTxtvLbl[i].textView.becomeFirstResponder()
+            }
+        }
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
+    
+    //MARK: Tao On Label To Edit Text
+    func tapOnLabelToEdit(sender: UITapGestureRecognizer) {
+        let point:CGPoint = sender.locationInView(imageView)
+        for i in 0..<arrTxtvLbl.count {
+            if point.x >= arrTxtvLbl[i].label.frame.origin.x && point.x <= arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width && point.y >= arrTxtvLbl[i].label.frame.origin.y && point.y <= arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height {
+                arrTxtvLbl[i].label.tag = 1
+                arrTxtvLbl[i].label.addGestureRecognizer(panGesture)
+            } else {
+                arrTxtvLbl[i].label.tag = 0
+            }
+        }
+        for i in (0..<arrTxtvLbl.count).reverse() {
+            arrTxtvLbl[i].textView.endEditing(false)
+        }
     }
-
+    
+    // MARK: Set TextView Font Size
+    @IBOutlet var lbl: UILabel!
+    @IBOutlet var slider: UISlider!
+    @IBAction func change(sender: UISlider) {
+        lbl.text = String(Int(slider.value))
+        for i in 0..<arrTxtvLbl.count {
+            if arrTxtvLbl[i].label.tag == 1  {
+                arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font!.fontWithSize(CGFloat(slider.value))
+                arrTxtvLbl[i].label.sizeToFit()
+                arrTxtvLbl[i].textView.frame.size.width = arrTxtvLbl[i].label.frame.size.width
+                arrTxtvLbl[i].textView.frame.size.height = arrTxtvLbl[i].label.frame.size.height
+                arrTxtvLbl[i].textView.font = arrTxtvLbl[i].label.font
+            }
+        }
+    }
+    
+    // MARK: Aligment TextView
+    @IBOutlet var aligment: UISegmentedControl!
+    
+    @IBAction func alignment(sender: UISegmentedControl) {
+        switch aligment.selectedSegmentIndex {
+        case 0:
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.textAlignment = NSTextAlignment.Left
+                }
+            }
+        case 1:
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.textAlignment = NSTextAlignment.Center
+                }
+            }
+        default:
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.textAlignment = NSTextAlignment.Right
+                }
+            }
+        }
+    }
+    
     // MARK: Button Save
     @IBAction func btnSaveClicked(sender: AnyObject) {
         txtv.endEditing(false)
@@ -154,23 +193,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        let logo:UILabel = UILabel()
+        logo.frame = CGRect(x: 30, y: 180, width: 100, height: 100)
+        logo.text = "#QuangDog"
+        logo.textColor = UIColor.redColor()
+        imageView.addSubview(logo)
         imageView.image = image
-        for i in 0..<arrTxtv.count {
-            arrTxtv[i].removeFromSuperview()
+        for i in 0..<arrTxtvLbl.count {
+            arrTxtvLbl[i].textView.removeFromSuperview()
+            arrTxtvLbl[i].label.removeFromSuperview()
         }
-    }
-    
-    // MARK: Tap Create txtv
-    func tapGesture(sender: UITapGestureRecognizer) {
-        let point:CGPoint = sender.locationInView(imageView)
-        txtv = UITextView()
-        txtv.backgroundColor = UIColor.redColor()
-        txtv.userInteractionEnabled = true
-        txtv.delegate = self
-        txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
-        txtv.becomeFirstResponder()
-        arrTxtv.append(txtv)
-        imageView.addSubview(txtv)
     }
     
     // MARK: PanGesture
@@ -185,23 +217,34 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
     
-    func textViewDidBeginEditing(textView: UITextView) {
-        for i in 0..<arrTxtv.count {
-            arrTxtv[i].tag = 0
-            if textView == arrTxtv[i] {
-                arrTxtv[i].tag = 1
-                arrTxtv[i].addGestureRecognizer(panGesture)
+    // MARK: textViewDidEndEditing
+    func textViewDidEndEditing(textView: UITextView) {
+        for i in (0..<arrTxtvLbl.count).reverse(){
+            if textView == arrTxtvLbl[i].textView && textView.text == "" {
+                arrTxtvLbl[i].textView.removeFromSuperview()
+                arrTxtvLbl[i].label.removeFromSuperview()
+                arrTxtvLbl.removeAtIndex(i)
+            } else if textView == arrTxtvLbl[i].textView && textView.text != "" {
+                arrTxtvLbl[i].textView.hidden = true
+                arrTxtvLbl[i].label.text = arrTxtvLbl[i].textView.text
+                arrTxtvLbl[i].label.hidden = false
             }
         }
     }
     
-    func textViewDidEndEditing(textView: UITextView) {
-        for i in (0..<arrTxtv.count).reverse(){
-            if textView == arrTxtv[i] && textView.text == "" {
-                arrTxtv[i].removeFromSuperview()
-                arrTxtv.removeAtIndex(i)
-            }
+    // MARK: - UIImagePickerControllerDelegate Methods
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            imageView.contentMode = .ScaleAspectFit
+            imageView.image = pickedImage
         }
+        
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     // MARK: PickerView
@@ -228,15 +271,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if component == 1 {
-            for i in 0..<arrTxtv.count {
-                if arrTxtv[i].tag == 1 {
-                    arrTxtv[i].textColor = color[row]
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.textColor = color[row]
                 }
             }
         } else {
-            for i in 0..<arrTxtv.count {
-                if arrTxtv[i].tag == 1 {
-                    arrTxtv[i].font = UIFont(name: arrItem[0][row], size: 14)
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.font = UIFont(name: arrItem[0][row], size: 14)
                 }
             }
         }
@@ -266,22 +309,5 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         UIGraphicsEndImageContext()
         self.imageView.backgroundColor = UIColor(patternImage: imageView)
     }
-    
-    // MARK: Func tapGesture1
-    func tapGesture1(sender: UITapGestureRecognizer) {
-        for i in 0..<arrTxtv.count {
-            arrTxtv[i].endEditing(false)
-        }
-    }
-    
-}
 
-//extension UIImage {
-//    class func imageWithLabel( image: UIImageView) -> UIImage {
-//        UIGraphicsBeginImageContextWithOptions(image.bounds.size, false, 0.0)
-//        image.layer.renderInContext(UIGraphicsGetCurrentContext()!)
-//        let img = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//        return img
-//    }
-//}
+}

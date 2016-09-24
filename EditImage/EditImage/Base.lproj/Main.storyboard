@@ -59,7 +59,7 @@
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
-                                    <imageView multipleTouchEnabled="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="K2q-8p-f4b">
+                                    <imageView multipleTouchEnabled="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="K2q-8p-f4b">
                                         <rect key="frame" x="0.0" y="100" width="375" height="250"/>
                                         <gestureRecognizers/>
                                         <constraints>
