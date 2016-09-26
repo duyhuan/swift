@@ -15,6 +15,7 @@ class ArrayModel: NSObject {
         super.init()
     }
     init(txtv: UITextView, lbl: UILabel) {
+        super.init()
         textView = txtv
         label = lbl
     }

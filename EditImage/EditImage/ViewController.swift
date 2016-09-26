@@ -11,8 +11,8 @@ import Social
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate {
     
-    var arrImage:[ItemModel] = []
-    var arrTxtvLbl:[ArrayModel] = []
+    var arrImage: [ItemModel] = []
+    var arrTxtvLbl: [ArrayModel] = []
     
     @IBOutlet var imageView: UIImageView!
     
@@ -37,6 +37,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     let color:[UIColor] = [UIColor.blueColor(), UIColor.redColor(), UIColor.grayColor(), UIColor.greenColor(), UIColor.blackColor()]
     let arrItem:[[String]] = [UIFont.familyNames(), ["blue", "red", "gray", "green", "black"]]
+    
+    // Declare Button, PanGesTure
+    let myBtnTopLeft: UIButton = UIButton()
+    let myBtnTopRight: UIButton = UIButton()
+    let myBtnBotLeft: UIButton = UIButton()
+    let myBtnBotRight: UIButton = UIButton()
+    
+    let panBtnTopLeftGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
+    let panBtnTopRightGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
+    let panBtnBotLeftGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
+    let panBtnBotRightGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
     
     // MARK: Button Share
     @IBAction func btnShare(sender: AnyObject) {
@@ -88,6 +99,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         slider.maximumValue = 100
         slider.value = 1
         lbl.text = "1"
+        
+        
+        
+        
     }
     
     // MARK: Tap Create txtv
@@ -103,25 +118,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
         txtv.becomeFirstResponder()
         
-        label.backgroundColor = UIColor.blueColor()
         label.userInteractionEnabled = true
         label.multipleTouchEnabled = true
         label.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
         label.hidden = true
+        label.layer.borderWidth = 1
+        label.layer.borderColor = UIColor.blackColor().CGColor
         
         arrTxtvLbl.append(ArrayModel.init(txtv: txtv, lbl: label))
         
         imageView.addSubview(txtv)
         imageView.addSubview(label)
         
+        
         for i in (0..<arrTxtvLbl.count).reverse() {
             if point.x >= arrTxtvLbl[i].label.frame.origin.x && point.x <= arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width && point.y >= arrTxtvLbl[i].label.frame.origin.y && point.y <= arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height {
                 arrTxtvLbl[i].label.hidden = true
                 arrTxtvLbl[i].label.addGestureRecognizer(panGesture)
-                arrTxtvLbl[i].textView.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x
-                arrTxtvLbl[i].textView.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y
+                arrTxtvLbl[i].textView.frame.origin = arrTxtvLbl[i].label.frame.origin
                 arrTxtvLbl[i].textView.hidden = false
                 arrTxtvLbl[i].textView.becomeFirstResponder()
+                
             }
         }
     }
@@ -134,12 +151,55 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             if point.x >= arrTxtvLbl[i].label.frame.origin.x && point.x <= arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width && point.y >= arrTxtvLbl[i].label.frame.origin.y && point.y <= arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height {
                 arrTxtvLbl[i].label.tag = 1
                 arrTxtvLbl[i].label.addGestureRecognizer(panGesture)
+                
+                myBtnTopLeft.frame = CGRectMake(arrTxtvLbl[i].label.frame.origin.x - 5, arrTxtvLbl[i].label.frame.origin.y - 5, 10, 10)
+                myBtnTopLeft.layer.cornerRadius = myBtnTopLeft.frame.size.width/2
+                myBtnTopLeft.layer.borderColor = UIColor.redColor().CGColor
+                myBtnTopLeft.layer.borderWidth = 1
+                imageView.addSubview(myBtnTopLeft)
+                panBtnTopLeftGesture.addTarget(self, action: #selector(ViewController.panBtnTopLeftGesture(_:)))
+                myBtnTopLeft.addGestureRecognizer(panBtnTopLeftGesture)
+                
+                myBtnTopRight.frame = CGRectMake(arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - 5, arrTxtvLbl[i].label.frame.origin.y - 5, 10, 10)
+                myBtnTopRight.layer.cornerRadius = myBtnTopRight.frame.size.width/2
+                myBtnTopRight.layer.borderColor = UIColor.redColor().CGColor
+                myBtnTopRight.layer.borderWidth = 1
+                imageView.addSubview(myBtnTopRight)
+                panBtnTopRightGesture.addTarget(self, action: #selector(ViewController.panBtnTopRightGesture(_:)))
+                myBtnTopRight.addGestureRecognizer(panBtnTopRightGesture)
+                
+                myBtnBotLeft.frame = CGRectMake(arrTxtvLbl[i].label.frame.origin.x - 5, arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - 5, 10, 10)
+                myBtnBotLeft.layer.cornerRadius = myBtnBotLeft.frame.size.width/2
+                myBtnBotLeft.layer.borderColor = UIColor.redColor().CGColor
+                myBtnBotLeft.layer.borderWidth = 1
+                imageView.addSubview(myBtnBotLeft)
+                panBtnBotLeftGesture.addTarget(self, action: #selector(ViewController.panBtnBotLeftGesture(_:)))
+                myBtnBotLeft.addGestureRecognizer(panBtnBotLeftGesture)
+                
+                myBtnBotRight.frame = CGRectMake(arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - 5, arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - 5, 10, 10)
+                myBtnBotRight.layer.cornerRadius = myBtnBotRight.frame.size.width/2
+                myBtnBotRight.layer.borderColor = UIColor.redColor().CGColor
+                myBtnBotRight.layer.borderWidth = 1
+                imageView.addSubview(myBtnBotRight)
+                panBtnBotRightGesture.addTarget(self, action: #selector(ViewController.panBtnBotRightGesture(_:)))
+                myBtnBotRight.addGestureRecognizer(panBtnBotRightGesture)
+                
+                arrTxtvLbl[i].textView.frame.size = arrTxtvLbl[i].label.frame.size
+                
             } else {
                 arrTxtvLbl[i].label.tag = 0
+                
+                
+//                myBtnTopLeft.hidden = true
+//                myBtnTopRight.hidden = true
+//                myBtnBotLeft.hidden = true
+//                myBtnBotRight.hidden = true
+
             }
         }
         for i in (0..<arrTxtvLbl.count).reverse() {
             arrTxtvLbl[i].textView.endEditing(false)
+            
         }
     }
     
@@ -151,9 +211,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         for i in 0..<arrTxtvLbl.count {
             if arrTxtvLbl[i].label.tag == 1  {
                 arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font!.fontWithSize(CGFloat(slider.value))
-                arrTxtvLbl[i].label.sizeToFit()
-                arrTxtvLbl[i].textView.frame.size.width = arrTxtvLbl[i].label.frame.size.width
-                arrTxtvLbl[i].textView.frame.size.height = arrTxtvLbl[i].label.frame.size.height
+                arrTxtvLbl[i].textView.frame.size = arrTxtvLbl[i].label.frame.size
                 arrTxtvLbl[i].textView.font = arrTxtvLbl[i].label.font
             }
         }
@@ -214,6 +272,120 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             let translation = sender.translationInView(self.imageView)
             sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
             sender.setTranslation(CGPointZero, inView: imageView)
+            for i in 0..<arrTxtvLbl.count {
+                myBtnTopLeft.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x - myBtnTopLeft.frame.size.width/2
+                myBtnTopLeft.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y - myBtnTopLeft.frame.size.height/2
+                myBtnTopRight.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - myBtnTopLeft.frame.size.width/2
+                myBtnTopRight.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y - myBtnTopLeft.frame.size.height/2
+                myBtnBotLeft.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x - myBtnTopLeft.frame.size.width/2
+                myBtnBotLeft.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - myBtnTopLeft.frame.size.height/2
+                myBtnBotRight.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - myBtnTopLeft.frame.size.width/2
+                myBtnBotRight.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - myBtnTopLeft.frame.size.height/2
+            }
+        }
+    }
+    
+    // MARK: Pan On Top Left Button
+    func panBtnTopLeftGesture(sender: UIPanGestureRecognizer) {
+        
+        //        let translation = sender.translationInView(self.view)
+        //
+        //        if let view = sender.view {
+        //            view.center = CGPoint(x:view.center.x + translation.x, y:view.center.y + translation.y)
+        //        }
+        //        sender.setTranslation(CGPointZero, inView: self.view)
+        
+        let location = sender.locationInView(view)
+        let someRect = view.bounds
+        if (CGRectContainsPoint(someRect, location)) {
+                let translation = sender.translationInView(imageView)
+                sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
+                sender.setTranslation(CGPointZero, inView: imageView)
+            
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.frame.origin.x = (sender.view?.center.x)!
+                    arrTxtvLbl[i].label.frame.origin.y = (sender.view?.center.y)!
+                    
+                    arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width - translation.x
+                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - translation.y
+                }
+            }
+            
+                myBtnTopRight.frame.origin.y = myBtnTopLeft.frame.origin.y
+                myBtnBotLeft.frame.origin.x = myBtnTopLeft.frame.origin.x
+        }
+    }
+    
+    // MARK: Pan On Top Right Button
+    func panBtnTopRightGesture(sender: UIPanGestureRecognizer) {
+        let location = sender.locationInView(view)
+        let someRect = view.bounds
+        if (CGRectContainsPoint(someRect, location)) {
+            let translation = sender.translationInView(view)
+            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
+            sender.setTranslation(CGPointZero, inView: view)
+            
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.frame.origin.x = (sender.view?.center.x)! - arrTxtvLbl[i].label.frame.size.width
+                    arrTxtvLbl[i].label.frame.origin.y = (sender.view?.center.y)!
+                    
+                    arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width + translation.x
+                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - translation.y
+                }
+            }
+            
+            myBtnTopLeft.frame.origin.y = myBtnTopRight.frame.origin.y
+            myBtnBotRight.frame.origin.x = myBtnTopRight.frame.origin.x
+        }
+    }
+    
+    // MARK: Pan On Bot Left Button
+    func panBtnBotLeftGesture(sender: UIPanGestureRecognizer) {
+        let location = sender.locationInView(view)
+        let someRect = view.bounds
+        if (CGRectContainsPoint(someRect, location)) {
+            let translation = sender.translationInView(view)
+            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
+            sender.setTranslation(CGPointZero, inView: view)
+            
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.frame.origin.x = (sender.view?.center.x)!
+                    arrTxtvLbl[i].label.frame.origin.y = (sender.view?.center.y)! - arrTxtvLbl[i].label.frame.size.height
+                    
+                    arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width - translation.x
+                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height + translation.y
+                }
+            }
+            
+            myBtnTopLeft.frame.origin.x = myBtnBotLeft.frame.origin.x
+            myBtnBotRight.frame.origin.y = myBtnBotLeft.frame.origin.y
+        }
+    }
+    
+    // MARK: Pan On Bot Right Button
+    func panBtnBotRightGesture(sender: UIPanGestureRecognizer) {
+        let location = sender.locationInView(view)
+        let someRect = view.bounds
+        if (CGRectContainsPoint(someRect, location)) {
+            let translation = sender.translationInView(view)
+            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
+            sender.setTranslation(CGPointZero, inView: view)
+            
+            for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
+                    arrTxtvLbl[i].label.frame.origin.x = (sender.view?.center.x)! - arrTxtvLbl[i].label.frame.size.width
+                    arrTxtvLbl[i].label.frame.origin.y = (sender.view?.center.y)! - arrTxtvLbl[i].label.frame.size.height
+                    
+                    arrTxtvLbl[i].label.frame.size.width = translation.x + arrTxtvLbl[i].label.frame.size.width
+                    arrTxtvLbl[i].label.frame.size.height = translation.y + arrTxtvLbl[i].label.frame.size.height
+                }
+            }
+            
+            myBtnTopRight.frame.origin.x = myBtnBotRight.frame.origin.x
+            myBtnBotLeft.frame.origin.y = myBtnBotRight.frame.origin.y
         }
     }
     
@@ -233,7 +405,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     // MARK: - UIImagePickerControllerDelegate Methods
-    
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imageView.contentMode = .ScaleAspectFit
