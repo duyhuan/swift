@@ -29,9 +29,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var txtv:UITextView = UITextView()
     var label:UILabel = UILabel()
     
-    let tapOnImageToCreateTextViewAndLabel:UITapGestureRecognizer = UITapGestureRecognizer()
-    let panGesture:UIPanGestureRecognizer = UIPanGestureRecognizer()
-    let tapOnLabelToEdit:UITapGestureRecognizer = UITapGestureRecognizer()
+    let tapOnImageToCreateTextViewAndLabel: UITapGestureRecognizer = UITapGestureRecognizer()
+    let panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
+    let tapOnLabelToEdit: UITapGestureRecognizer = UITapGestureRecognizer()
 
     let imagePicker = UIImagePickerController()
     
@@ -100,9 +100,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         slider.value = 1
         lbl.text = "1"
         
-        
-        
-        
     }
     
     // MARK: Tap Create txtv
@@ -112,7 +109,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         label = UILabel()
         
         txtv.scrollEnabled = false
-        txtv.backgroundColor = UIColor.redColor()
+        txtv.backgroundColor = UIColor.clearColor()
         txtv.userInteractionEnabled = true
         txtv.delegate = self
         txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
@@ -122,14 +119,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         label.multipleTouchEnabled = true
         label.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
         label.hidden = true
-        label.layer.borderWidth = 1
-        label.layer.borderColor = UIColor.blackColor().CGColor
+        label.layer.borderColor = UIColor.whiteColor().CGColor
+        label.numberOfLines = 0
         
         arrTxtvLbl.append(ArrayModel.init(txtv: txtv, lbl: label))
         
         imageView.addSubview(txtv)
         imageView.addSubview(label)
-        
         
         for i in (0..<arrTxtvLbl.count).reverse() {
             if point.x >= arrTxtvLbl[i].label.frame.origin.x && point.x <= arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width && point.y >= arrTxtvLbl[i].label.frame.origin.y && point.y <= arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height {
@@ -138,7 +134,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 arrTxtvLbl[i].textView.frame.origin = arrTxtvLbl[i].label.frame.origin
                 arrTxtvLbl[i].textView.hidden = false
                 arrTxtvLbl[i].textView.becomeFirstResponder()
-                
+                myBtnTopLeft.hidden = true
+                myBtnTopRight.hidden = true
+                myBtnBotLeft.hidden = true
+                myBtnBotRight.hidden = true
             }
         }
     }
@@ -147,8 +146,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //MARK: Tao On Label To Edit Text
     func tapOnLabelToEdit(sender: UITapGestureRecognizer) {
         let point:CGPoint = sender.locationInView(imageView)
+        myBtnTopLeft.hidden = true
+        myBtnTopRight.hidden = true
+        myBtnBotLeft.hidden = true
+        myBtnBotRight.hidden = true
         for i in 0..<arrTxtvLbl.count {
+            arrTxtvLbl[i].label.tag = 0
+            arrTxtvLbl[i].label.layer.borderWidth = 0
             if point.x >= arrTxtvLbl[i].label.frame.origin.x && point.x <= arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width && point.y >= arrTxtvLbl[i].label.frame.origin.y && point.y <= arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height {
+                arrTxtvLbl[i].label.layer.borderWidth = 1
                 arrTxtvLbl[i].label.tag = 1
                 arrTxtvLbl[i].label.addGestureRecognizer(panGesture)
                 
@@ -156,6 +162,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 myBtnTopLeft.layer.cornerRadius = myBtnTopLeft.frame.size.width/2
                 myBtnTopLeft.layer.borderColor = UIColor.redColor().CGColor
                 myBtnTopLeft.layer.borderWidth = 1
+                myBtnTopLeft.hidden = false
                 imageView.addSubview(myBtnTopLeft)
                 panBtnTopLeftGesture.addTarget(self, action: #selector(ViewController.panBtnTopLeftGesture(_:)))
                 myBtnTopLeft.addGestureRecognizer(panBtnTopLeftGesture)
@@ -164,6 +171,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 myBtnTopRight.layer.cornerRadius = myBtnTopRight.frame.size.width/2
                 myBtnTopRight.layer.borderColor = UIColor.redColor().CGColor
                 myBtnTopRight.layer.borderWidth = 1
+                myBtnTopRight.hidden = false
                 imageView.addSubview(myBtnTopRight)
                 panBtnTopRightGesture.addTarget(self, action: #selector(ViewController.panBtnTopRightGesture(_:)))
                 myBtnTopRight.addGestureRecognizer(panBtnTopRightGesture)
@@ -172,6 +180,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 myBtnBotLeft.layer.cornerRadius = myBtnBotLeft.frame.size.width/2
                 myBtnBotLeft.layer.borderColor = UIColor.redColor().CGColor
                 myBtnBotLeft.layer.borderWidth = 1
+                myBtnBotLeft.hidden = false
                 imageView.addSubview(myBtnBotLeft)
                 panBtnBotLeftGesture.addTarget(self, action: #selector(ViewController.panBtnBotLeftGesture(_:)))
                 myBtnBotLeft.addGestureRecognizer(panBtnBotLeftGesture)
@@ -180,26 +189,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 myBtnBotRight.layer.cornerRadius = myBtnBotRight.frame.size.width/2
                 myBtnBotRight.layer.borderColor = UIColor.redColor().CGColor
                 myBtnBotRight.layer.borderWidth = 1
+                myBtnBotRight.hidden = false
                 imageView.addSubview(myBtnBotRight)
                 panBtnBotRightGesture.addTarget(self, action: #selector(ViewController.panBtnBotRightGesture(_:)))
                 myBtnBotRight.addGestureRecognizer(panBtnBotRightGesture)
                 
                 arrTxtvLbl[i].textView.frame.size = arrTxtvLbl[i].label.frame.size
-                
-            } else {
-                arrTxtvLbl[i].label.tag = 0
-                
-                
-//                myBtnTopLeft.hidden = true
-//                myBtnTopRight.hidden = true
-//                myBtnBotLeft.hidden = true
-//                myBtnBotRight.hidden = true
-
             }
         }
+        
         for i in (0..<arrTxtvLbl.count).reverse() {
             arrTxtvLbl[i].textView.endEditing(false)
-            
         }
     }
     
@@ -246,6 +246,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // MARK: Button Save
     @IBAction func btnSaveClicked(sender: AnyObject) {
         txtv.endEditing(false)
+        label.layer.borderWidth = 0
+        myBtnTopLeft.hidden = true
+        myBtnTopRight.hidden = true
+        myBtnBotLeft.hidden = true
+        myBtnBotRight.hidden = true
         UIGraphicsBeginImageContext(imageView.frame.size)
         imageView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
