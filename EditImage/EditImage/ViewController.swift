@@ -15,13 +15,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var arrTxtvLbl: [ArrayModel] = []
     
     @IBOutlet var imageView: UIImageView!
-    
     @IBOutlet var collectionView: UICollectionView!
-    
     @IBOutlet var pickerView: UIPickerView!
-    
     @IBOutlet var myView: UIView!
-    
     @IBOutlet var btnChooseImage: UIButton!
     @IBOutlet var btnSave: UIButton!
     @IBOutlet var btnShare: UIButton!
@@ -97,9 +93,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         slider.minimumValue = 1
         slider.maximumValue = 100
-        slider.value = 1
         lbl.text = "1"
         
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.1
     }
     
     // MARK: Tap Create txtv
@@ -109,7 +106,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         label = UILabel()
         
         txtv.scrollEnabled = false
-        txtv.backgroundColor = UIColor.clearColor()
+        txtv.backgroundColor = UIColor.redColor()
         txtv.userInteractionEnabled = true
         txtv.delegate = self
         txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
@@ -121,6 +118,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         label.hidden = true
         label.layer.borderColor = UIColor.whiteColor().CGColor
         label.numberOfLines = 0
+        label.adjustsFontSizeToFitWidth = true
         
         arrTxtvLbl.append(ArrayModel.init(txtv: txtv, lbl: label))
         
@@ -134,6 +132,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 arrTxtvLbl[i].textView.frame.origin = arrTxtvLbl[i].label.frame.origin
                 arrTxtvLbl[i].textView.hidden = false
                 arrTxtvLbl[i].textView.becomeFirstResponder()
+                arrTxtvLbl[i].textView.font = arrTxtvLbl[i].label.font
                 myBtnTopLeft.hidden = true
                 myBtnTopRight.hidden = true
                 myBtnBotLeft.hidden = true
@@ -195,6 +194,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 myBtnBotRight.addGestureRecognizer(panBtnBotRightGesture)
                 
                 arrTxtvLbl[i].textView.frame.size = arrTxtvLbl[i].label.frame.size
+                arrTxtvLbl[i].textView.textColor = arrTxtvLbl[i].label.textColor
+                
+                slider.value = Float(arrTxtvLbl[i].label.font.pointSize)
+                lbl.text = String(Int(arrTxtvLbl[i].label.font.pointSize))
             }
         }
         
@@ -243,34 +246,31 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
     
-    // MARK: Button Save
+    // MARK: Save Button
     @IBAction func btnSaveClicked(sender: AnyObject) {
-        txtv.endEditing(false)
-        label.layer.borderWidth = 0
+        for i in 0..<arrTxtvLbl.count {
+            arrTxtvLbl[i].textView.endEditing(false)
+            arrTxtvLbl[i].label.layer.borderWidth = 0
+        }
         myBtnTopLeft.hidden = true
         myBtnTopRight.hidden = true
         myBtnBotLeft.hidden = true
         myBtnBotRight.hidden = true
-        UIGraphicsBeginImageContext(imageView.frame.size)
-        imageView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         let logo:UILabel = UILabel()
-        logo.frame = CGRect(x: 30, y: 180, width: 100, height: 100)
+        logo.frame = CGRect(x: 10, y: 180, width: 100, height: 100)
         logo.text = "#QuangDog"
         logo.textColor = UIColor.redColor()
         imageView.addSubview(logo)
-        imageView.image = image
-        for i in 0..<arrTxtvLbl.count {
-            arrTxtvLbl[i].textView.removeFromSuperview()
-            arrTxtvLbl[i].label.removeFromSuperview()
-        }
+        UIGraphicsBeginImageContext(imageView.frame.size)
+        imageView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        let imageSave = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        UIImageWriteToSavedPhotosAlbum(imageSave, nil, nil, nil)
+        logo.removeFromSuperview()
     }
     
     // MARK: PanGesture
     func panGesture(sender: UIPanGestureRecognizer) {
-        
         let location = sender.locationInView(imageView)
         let someRect = imageView.bounds
         if (CGRectContainsPoint(someRect, location)) {
@@ -278,6 +278,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
             sender.setTranslation(CGPointZero, inView: imageView)
             for i in 0..<arrTxtvLbl.count {
+                if arrTxtvLbl[i].label.tag == 1 {
                 myBtnTopLeft.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x - myBtnTopLeft.frame.size.width/2
                 myBtnTopLeft.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y - myBtnTopLeft.frame.size.height/2
                 myBtnTopRight.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - myBtnTopLeft.frame.size.width/2
@@ -286,6 +287,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 myBtnBotLeft.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - myBtnTopLeft.frame.size.height/2
                 myBtnBotRight.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - myBtnTopLeft.frame.size.width/2
                 myBtnBotRight.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - myBtnTopLeft.frame.size.height/2
+                }
             }
         }
     }
@@ -303,9 +305,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let location = sender.locationInView(view)
         let someRect = view.bounds
         if (CGRectContainsPoint(someRect, location)) {
-                let translation = sender.translationInView(imageView)
-                sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
-                sender.setTranslation(CGPointZero, inView: imageView)
+            let translation = sender.translationInView(imageView)
+            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
+            sender.setTranslation(CGPointZero, inView: imageView)
             
             for i in 0..<arrTxtvLbl.count {
                 if arrTxtvLbl[i].label.tag == 1 {
@@ -314,11 +316,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width - translation.x
                     arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - translation.y
+            
+                    let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize - translation.y
+                    arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
+                    
+                    let size = self.arrTxtvLbl[i].label.font!.pointSize
+                    slider.value = Float(size)
+                    lbl.text = String(Int(size))
                 }
             }
             
-                myBtnTopRight.frame.origin.y = myBtnTopLeft.frame.origin.y
-                myBtnBotLeft.frame.origin.x = myBtnTopLeft.frame.origin.x
+            myBtnTopRight.frame.origin.y = myBtnTopLeft.frame.origin.y
+            myBtnBotLeft.frame.origin.x = myBtnTopLeft.frame.origin.x
         }
     }
     
@@ -338,6 +347,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width + translation.x
                     arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - translation.y
+                    
+                    let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize - translation.y
+                    arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
                 }
             }
             
@@ -362,6 +374,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width - translation.x
                     arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height + translation.y
+                    
+                    let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize + translation.y
+                    arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
                 }
             }
             
@@ -386,6 +401,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     arrTxtvLbl[i].label.frame.size.width = translation.x + arrTxtvLbl[i].label.frame.size.width
                     arrTxtvLbl[i].label.frame.size.height = translation.y + arrTxtvLbl[i].label.frame.size.height
+                    
+                    let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize + translation.y
+                    arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
                 }
             }
             
@@ -405,6 +423,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 arrTxtvLbl[i].textView.hidden = true
                 arrTxtvLbl[i].label.text = arrTxtvLbl[i].textView.text
                 arrTxtvLbl[i].label.hidden = false
+                let size = self.arrTxtvLbl[i].textView.font!.pointSize
+                slider.value = Float(size)
+                lbl.text = String(Int(size))
             }
         }
     }
@@ -455,7 +476,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         } else {
             for i in 0..<arrTxtvLbl.count {
                 if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.font = UIFont(name: arrItem[0][row], size: 14)
+                    arrTxtvLbl[i].label.font = UIFont(name: arrItem[0][row], size: CGFloat(slider.value))
                 }
             }
         }
