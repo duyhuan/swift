@@ -116,7 +116,7 @@
                                             <segment title="Right"/>
                                         </segments>
                                         <connections>
-                                            <action selector="alignment:" destination="BYZ-38-t0r" eventType="valueChanged" id="FvY-68-77k"/>
+                                            <action selector="segmentClick:" destination="BYZ-38-t0r" eventType="valueChanged" id="OcH-Nz-B4f"/>
                                         </connections>
                                     </segmentedControl>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="-0.5" maxValue="5.5" translatesAutoresizingMaskIntoConstraints="NO" id="uRS-sk-uwy">
@@ -171,7 +171,6 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="aligment" destination="XHp-3v-ETM" id="XcU-OI-zwf"/>
                         <outlet property="btnChooseImage" destination="PK7-h8-X0V" id="Rbe-cr-bqa"/>
                         <outlet property="btnSave" destination="IZp-dR-LJf" id="Yxi-ok-Gdp"/>
                         <outlet property="btnShare" destination="uJ0-u8-Jwq" id="ZkA-Sl-Caw"/>
@@ -180,6 +179,7 @@
                         <outlet property="lbl" destination="vlk-xF-jHR" id="T9f-Gf-tFf"/>
                         <outlet property="myView" destination="cOR-TX-r1J" id="LNR-Z5-V0L"/>
                         <outlet property="pickerView" destination="FaU-eI-j1D" id="yu7-7S-WQc"/>
+                        <outlet property="segment" destination="XHp-3v-ETM" id="hPP-TC-fqc"/>
                         <outlet property="slider" destination="uRS-sk-uwy" id="3Ns-Uh-pPf"/>
                     </connections>
                 </viewController>

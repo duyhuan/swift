@@ -119,6 +119,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         label.layer.borderColor = UIColor.whiteColor().CGColor
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
+        label.font = UIFont(name: "Arial", size: 17)
+        label.textAlignment = .Left
         
         arrTxtvLbl.append(ArrayModel.init(txtv: txtv, lbl: label))
         
@@ -193,11 +195,33 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 panBtnBotRightGesture.addTarget(self, action: #selector(ViewController.panBtnBotRightGesture(_:)))
                 myBtnBotRight.addGestureRecognizer(panBtnBotRightGesture)
                 
-                arrTxtvLbl[i].textView.frame.size = arrTxtvLbl[i].label.frame.size
+                arrTxtvLbl[i].textView.frame = arrTxtvLbl[i].label.frame
+                arrTxtvLbl[i].textView.font = arrTxtvLbl[i].label.font
                 arrTxtvLbl[i].textView.textColor = arrTxtvLbl[i].label.textColor
                 
                 slider.value = Float(arrTxtvLbl[i].label.font.pointSize)
                 lbl.text = String(Int(arrTxtvLbl[i].label.font.pointSize))
+                
+                
+                for j in 0..<arrItem[1].count {
+                    if color[j] == arrTxtvLbl[i].label.textColor {
+                        pickerView.selectRow(j, inComponent: 1, animated: true)
+                    }
+                }
+                
+                for k in 0..<arrItem[0].count {
+                    if arrItem[0][k] == arrTxtvLbl[i].label.font.familyName {
+                        pickerView.selectRow(k, inComponent: 0, animated: true)
+                    }
+                }
+                
+                if arrTxtvLbl[i].label.textAlignment == .Left {
+                    segment.selectedSegmentIndex = 0
+                } else if arrTxtvLbl[i].label.textAlignment == .Center {
+                    segment.selectedSegmentIndex = 1
+                } else if arrTxtvLbl[i].label.textAlignment == .Right {
+                    segment.selectedSegmentIndex = 2
+                }
             }
         }
         
@@ -221,10 +245,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     // MARK: Aligment TextView
-    @IBOutlet var aligment: UISegmentedControl!
+    @IBOutlet var segment: UISegmentedControl!
     
-    @IBAction func alignment(sender: UISegmentedControl) {
-        switch aligment.selectedSegmentIndex {
+    @IBAction func segmentClick(sender: UISegmentedControl) {
+        switch segment.selectedSegmentIndex {
         case 0:
             for i in 0..<arrTxtvLbl.count {
                 if arrTxtvLbl[i].label.tag == 1 {
@@ -264,7 +288,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         UIGraphicsBeginImageContext(imageView.frame.size)
         imageView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         let imageSave = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        //UIGraphicsEndImageContext()
         UIImageWriteToSavedPhotosAlbum(imageSave, nil, nil, nil)
         logo.removeFromSuperview()
     }
@@ -423,6 +447,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 arrTxtvLbl[i].textView.hidden = true
                 arrTxtvLbl[i].label.text = arrTxtvLbl[i].textView.text
                 arrTxtvLbl[i].label.hidden = false
+                arrTxtvLbl[i].label.font = arrTxtvLbl[i].textView.font
                 let size = self.arrTxtvLbl[i].textView.font!.pointSize
                 slider.value = Float(size)
                 lbl.text = String(Int(size))
@@ -482,6 +507,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
     
+    func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 50
+    }
+    
     // MARK: CollectionView
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return arrImage.count
@@ -506,5 +535,4 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         UIGraphicsEndImageContext()
         self.imageView.backgroundColor = UIColor(patternImage: imageView)
     }
-
 }
