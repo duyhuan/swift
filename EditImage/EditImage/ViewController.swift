@@ -93,10 +93,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         slider.minimumValue = 1
         slider.maximumValue = 100
-        lbl.text = "1"
-        
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.1
+        lbl.text = "17"
     }
     
     // MARK: Tap Create txtv
@@ -109,18 +106,20 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         txtv.backgroundColor = UIColor.redColor()
         txtv.userInteractionEnabled = true
         txtv.delegate = self
-        txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
+        txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 21)
         txtv.becomeFirstResponder()
+        txtv.font = txtv.font?.fontWithSize(17)
         
         label.userInteractionEnabled = true
         label.multipleTouchEnabled = true
-        label.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 30)
+        label.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 21)
         label.hidden = true
         label.layer.borderColor = UIColor.whiteColor().CGColor
         label.numberOfLines = 0
-        label.adjustsFontSizeToFitWidth = true
+        label.lineBreakMode = .ByWordWrapping
         label.font = UIFont(name: "Arial", size: 17)
         label.textAlignment = .Left
+        label.minimumScaleFactor = 1
         
         arrTxtvLbl.append(ArrayModel.init(txtv: txtv, lbl: label))
         
@@ -196,7 +195,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 myBtnBotRight.addGestureRecognizer(panBtnBotRightGesture)
                 
                 arrTxtvLbl[i].textView.frame = arrTxtvLbl[i].label.frame
-                arrTxtvLbl[i].textView.font = arrTxtvLbl[i].label.font
                 arrTxtvLbl[i].textView.textColor = arrTxtvLbl[i].label.textColor
                 
                 slider.value = Float(arrTxtvLbl[i].label.font.pointSize)
@@ -240,6 +238,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font!.fontWithSize(CGFloat(slider.value))
                 arrTxtvLbl[i].textView.frame.size = arrTxtvLbl[i].label.frame.size
                 arrTxtvLbl[i].textView.font = arrTxtvLbl[i].label.font
+                
+//                while arrTxtvLbl[i].label.intrinsicContentSize().height > arrTxtvLbl[i].label.frame.size.height {
+//                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height + 1
+//                }
+//                
+//                while arrTxtvLbl[i].label.intrinsicContentSize().height <= arrTxtvLbl[i].label.frame.size.height {
+//                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - 1
+//                }
             }
         }
     }
@@ -340,13 +346,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width - translation.x
                     arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - translation.y
-            
-                    let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize - translation.y
+                    
+                    let sizeText: CGFloat = arrTxtvLbl[i].label.font.pointSize - translation.y
                     arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
                     
                     let size = self.arrTxtvLbl[i].label.font!.pointSize
                     slider.value = Float(size)
                     lbl.text = String(Int(size))
+                    
+                    resizeFontLabel(arrTxtvLbl[i].label)
                 }
             }
             
@@ -374,6 +382,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize - translation.y
                     arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
+                    
+                    resizeFontLabel(arrTxtvLbl[i].label)
                 }
             }
             
@@ -401,6 +411,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize + translation.y
                     arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
+                    
+                    resizeFontLabel(arrTxtvLbl[i].label)
                 }
             }
             
@@ -428,6 +440,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize + translation.y
                     arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
+                    
+                    resizeFontLabel(arrTxtvLbl[i].label)
                 }
             }
             
@@ -451,6 +465,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 let size = self.arrTxtvLbl[i].textView.font!.pointSize
                 slider.value = Float(size)
                 lbl.text = String(Int(size))
+                
+                resizeFontLabel(arrTxtvLbl[i].label)
+//                print( arrTxtvLbl[i].label.frame.size.height)
+//                print( arrTxtvLbl[i].label.frame.size.width)
+//                print(arrTxtvLbl[i].label.intrinsicContentSize())
+//                
+//                let temp = arrTxtvLbl[i].label.intrinsicContentSize().width / arrTxtvLbl[i].label.frame.size.width
+//                if arrTxtvLbl[i].label.intrinsicContentSize().width <= arrTxtvLbl[i].label.frame.size.width * CGFloat(Int(temp + 1)) {
+//                    arrTxtvLbl[i].label.frame.size.height = 21 * CGFloat(Int(temp) + 1)
+//                } else {
+//                    arrTxtvLbl[i].label.frame.size.height = 21 * CGFloat(Int(temp))
+//                }
             }
         }
     }
@@ -534,5 +560,30 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let imageView = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         self.imageView.backgroundColor = UIColor(patternImage: imageView)
+    }
+    
+    
+    // Resize font size label
+    func resizeFontLabel(label: UILabel) {
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            var fontsize = label.font?.pointSize
+            label.layoutIfNeeded()
+            
+            while (fontsize > 1.0 &&  label.sizeThatFits(CGSizeMake(label.frame.size.width, CGFloat(FLT_MAX))).height >= label.frame.size.height) {
+                fontsize = fontsize! - 0.5
+                label.font = label.font!.fontWithSize(fontsize!)
+            }
+        })
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            var fontsize = label.font?.pointSize
+            label.layoutIfNeeded()
+            
+            while (label.sizeThatFits(CGSizeMake(label.frame.size.width, CGFloat(FLT_MAX))).height < label.frame.size.height ) {
+                fontsize = fontsize! + 0.5
+                label.font = label.font!.fontWithSize(fontsize!)
+            }
+        })
     }
 }
