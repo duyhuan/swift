@@ -2,588 +2,367 @@
 //  ViewController.swift
 //  EditImage
 //
-//  Created by huan huan on 9/13/16.
+//  Created by huan huan on 10/5/16.
 //  Copyright © 2016 Duy Huan. All rights reserved.
 //
 
 import UIKit
 import Social
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate {
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate {
     
-    var arrImage: [ItemModel] = []
-    var arrTxtvLbl: [ArrayModel] = []
-    
-    @IBOutlet var imageView: UIImageView!
-    @IBOutlet var collectionView: UICollectionView!
-    @IBOutlet var pickerView: UIPickerView!
-    @IBOutlet var myView: UIView!
-    @IBOutlet var btnChooseImage: UIButton!
-    @IBOutlet var btnSave: UIButton!
-    @IBOutlet var btnShare: UIButton!
-    
-    var txtv:UITextView = UITextView()
-    var label:UILabel = UILabel()
-    
-    let tapOnImageToCreateTextViewAndLabel: UITapGestureRecognizer = UITapGestureRecognizer()
-    let panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
-    let tapOnLabelToEdit: UITapGestureRecognizer = UITapGestureRecognizer()
-
+    var arrItem: [ItemModel] = []
+    var arrBackgroundColor: [BackgroundColorModel] = []
+    var arrBackgroundImage: [BackgroundImageModel] = []
+    var arrPattern: [PatternModel] = []
     let imagePicker = UIImagePickerController()
+    let userDF: NSUserDefaults = NSUserDefaults()
+    let imgItem: UIImageView = UIImageView()
+    let gradientLayer: CAGradientLayer = CAGradientLayer()
     
-    let color:[UIColor] = [UIColor.blueColor(), UIColor.redColor(), UIColor.grayColor(), UIColor.greenColor(), UIColor.blackColor()]
-    let arrItem:[[String]] = [UIFont.familyNames(), ["blue", "red", "gray", "green", "black"]]
-    
-    // Declare Button, PanGesTure
-    let myBtnTopLeft: UIButton = UIButton()
-    let myBtnTopRight: UIButton = UIButton()
-    let myBtnBotLeft: UIButton = UIButton()
-    let myBtnBotRight: UIButton = UIButton()
-    
-    let panBtnTopLeftGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
-    let panBtnTopRightGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
-    let panBtnBotLeftGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
-    let panBtnBotRightGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
-    
-    // MARK: Button Share
-    @IBAction func btnShare(sender: AnyObject) {
-        let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
-        composeSheet.addImage(imageView.image)
-        
-        presentViewController(composeSheet, animated: true, completion: nil)
+    var indexItem = [NSIndexPath]() {
+        didSet {
+            colViewBackgroundColor.reloadData()
+        }
     }
     
-    // MARK: Button Choose Image
-    @IBAction func loadImageButtonTapped(sender: UIButton) {
-        imagePicker.allowsEditing = false
-        imagePicker.sourceType = .PhotoLibrary
-        
-        presentViewController(imagePicker, animated: true, completion: nil)
+    var indexBackground = [NSIndexPath]()
+        {
+        didSet {
+            //colViewItem.reloadData()
+        }
     }
+    
+    let arrFont: [String] = UIFont.familyNames()
+    
+    @IBOutlet var colViewItem: UICollectionView!
+    @IBOutlet var imgView: UIImageView!
+    @IBOutlet var colViewBackgroundColor: UICollectionView!
+    @IBOutlet var colFont: UICollectionView!
+    @IBOutlet var slider: UISlider!
+    @IBOutlet var gradientLayerView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        imagePicker.delegate = self
+        colViewItem.delegate = self
+        colViewItem.dataSource = self
+        colViewBackgroundColor.delegate = self
+        colViewBackgroundColor.dataSource = self
+        colViewBackgroundColor.backgroundColor = UIColor.darkGrayColor()
+        colViewBackgroundColor.hidden = true
         
-        tapOnImageToCreateTextViewAndLabel.addTarget(self, action: #selector(ViewController.tapOnImageToCreateTextViewAndLabel(_:)))
-        tapOnImageToCreateTextViewAndLabel.numberOfTapsRequired = 2
-        imageView.addGestureRecognizer(tapOnImageToCreateTextViewAndLabel)
+        arrItemAppend()
+        arrBackgroundColorAppend()
+        arrPatternAppend()
+        arrBackgroundImageAppend()
         
-        panGesture.addTarget(self, action: #selector(ViewController.panGesture(_:)))
+        imgItem.image = UIImage(named: "CP_Selected")
+        imgView.image = UIImage(named: "1FA6SEYFHF.jpg")
         
-        tapOnLabelToEdit.addTarget(self, action: #selector(ViewController.tapOnLabelToEdit(_:)))
-        imageView.addGestureRecognizer(tapOnLabelToEdit)
+        colFont.delegate = self
+        colFont.dataSource = self
         
-        pickerView.delegate = self
-        pickerView.dataSource = self
+        processGradientLayer()
+        colorTemplate()
+    }
+    
+    // MARK: Add Text
+    @IBAction func btnAddTextClicked(sender: UIButton) {
+        let lblText: UILabel = UILabel()
+        lblText.text = "Double tap to quote"
+        lblText.layer.borderColor = UIColor.whiteColor().CGColor
+        lblText.layer.borderWidth = 1
+        lblText.frame.size = CGSize(width: 150, height: 70)
+        lblText.textAlignment = .Center
+        lblText.textColor = UIColor.whiteColor()
+        imgView.addSubview(lblText)
         
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        lblText.autoresizesSubviews = false
+        lblText.translatesAutoresizingMaskIntoConstraints = false
         
-        arrImage.append(ItemModel.init(img: "1.jpg"))
-        arrImage.append(ItemModel.init(img: "2.jpg"))
-        arrImage.append(ItemModel.init(img: "3.jpg"))
-        arrImage.append(ItemModel.init(img: "4.jpg"))
-        arrImage.append(ItemModel.init(img: "5.jpg"))
-
-        btnChooseImage.layer.cornerRadius = 5
-        btnSave.layer.cornerRadius = 5
-        btnShare.layer.cornerRadius = 5
-        
-        slider.minimumValue = 1
-        slider.maximumValue = 100
-        lbl.text = "17"
+        let h = (imgView.frame.size.height - lblText.frame.size.height)/2
+        let w = (imgView.frame.size.width - lblText.frame.size.width)/2
+        print(w)
+        imgView.addConstraint(NSLayoutConstraint(item: lblText, attribute: .Top, relatedBy: .Equal, toItem: imgView, attribute: .Top, multiplier: 1, constant: h))
+        imgView.addConstraint(NSLayoutConstraint(item: lblText, attribute: .Leading, relatedBy: .Equal, toItem: imgView, attribute: .Leading, multiplier: 1, constant: w))
     }
     
-    // MARK: Tap Create txtv
-    func tapOnImageToCreateTextViewAndLabel(sender: UITapGestureRecognizer) {
-        let point:CGPoint = sender.locationInView(imageView)
-        txtv = UITextView()
-        label = UILabel()
-        
-        txtv.scrollEnabled = false
-        txtv.backgroundColor = UIColor.redColor()
-        txtv.userInteractionEnabled = true
-        txtv.delegate = self
-        txtv.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 21)
-        txtv.becomeFirstResponder()
-        txtv.font = txtv.font?.fontWithSize(17)
-        
-        label.userInteractionEnabled = true
-        label.multipleTouchEnabled = true
-        label.frame =  CGRect(x: point.x, y: point.y, width: 100, height: 21)
-        label.hidden = true
-        label.layer.borderColor = UIColor.whiteColor().CGColor
-        label.numberOfLines = 0
-        label.lineBreakMode = .ByWordWrapping
-        label.font = UIFont(name: "Arial", size: 17)
-        label.textAlignment = .Left
-        label.minimumScaleFactor = 1
-        
-        arrTxtvLbl.append(ArrayModel.init(txtv: txtv, lbl: label))
-        
-        imageView.addSubview(txtv)
-        imageView.addSubview(label)
-        
-        for i in (0..<arrTxtvLbl.count).reverse() {
-            if point.x >= arrTxtvLbl[i].label.frame.origin.x && point.x <= arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width && point.y >= arrTxtvLbl[i].label.frame.origin.y && point.y <= arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height {
-                arrTxtvLbl[i].label.hidden = true
-                arrTxtvLbl[i].label.addGestureRecognizer(panGesture)
-                arrTxtvLbl[i].textView.frame.origin = arrTxtvLbl[i].label.frame.origin
-                arrTxtvLbl[i].textView.hidden = false
-                arrTxtvLbl[i].textView.becomeFirstResponder()
-                arrTxtvLbl[i].textView.font = arrTxtvLbl[i].label.font
-                myBtnTopLeft.hidden = true
-                myBtnTopRight.hidden = true
-                myBtnBotLeft.hidden = true
-                myBtnBotRight.hidden = true
-            }
-        }
+    // MARK: Share on the face
+    @IBAction func btnShareOnFaceClicked(sender: UIButton) {
+        let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+        composeSheet.addImage(imgView.image)
+        presentViewController(composeSheet, animated: true, completion: nil)
     }
     
-    
-    //MARK: Tao On Label To Edit Text
-    func tapOnLabelToEdit(sender: UITapGestureRecognizer) {
-        let point:CGPoint = sender.locationInView(imageView)
-        myBtnTopLeft.hidden = true
-        myBtnTopRight.hidden = true
-        myBtnBotLeft.hidden = true
-        myBtnBotRight.hidden = true
-        for i in 0..<arrTxtvLbl.count {
-            arrTxtvLbl[i].label.tag = 0
-            arrTxtvLbl[i].label.layer.borderWidth = 0
-            if point.x >= arrTxtvLbl[i].label.frame.origin.x && point.x <= arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width && point.y >= arrTxtvLbl[i].label.frame.origin.y && point.y <= arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height {
-                arrTxtvLbl[i].label.layer.borderWidth = 1
-                arrTxtvLbl[i].label.tag = 1
-                arrTxtvLbl[i].label.addGestureRecognizer(panGesture)
-                
-                myBtnTopLeft.frame = CGRectMake(arrTxtvLbl[i].label.frame.origin.x - 5, arrTxtvLbl[i].label.frame.origin.y - 5, 10, 10)
-                myBtnTopLeft.layer.cornerRadius = myBtnTopLeft.frame.size.width/2
-                myBtnTopLeft.layer.borderColor = UIColor.redColor().CGColor
-                myBtnTopLeft.layer.borderWidth = 1
-                myBtnTopLeft.hidden = false
-                imageView.addSubview(myBtnTopLeft)
-                panBtnTopLeftGesture.addTarget(self, action: #selector(ViewController.panBtnTopLeftGesture(_:)))
-                myBtnTopLeft.addGestureRecognizer(panBtnTopLeftGesture)
-                
-                myBtnTopRight.frame = CGRectMake(arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - 5, arrTxtvLbl[i].label.frame.origin.y - 5, 10, 10)
-                myBtnTopRight.layer.cornerRadius = myBtnTopRight.frame.size.width/2
-                myBtnTopRight.layer.borderColor = UIColor.redColor().CGColor
-                myBtnTopRight.layer.borderWidth = 1
-                myBtnTopRight.hidden = false
-                imageView.addSubview(myBtnTopRight)
-                panBtnTopRightGesture.addTarget(self, action: #selector(ViewController.panBtnTopRightGesture(_:)))
-                myBtnTopRight.addGestureRecognizer(panBtnTopRightGesture)
-                
-                myBtnBotLeft.frame = CGRectMake(arrTxtvLbl[i].label.frame.origin.x - 5, arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - 5, 10, 10)
-                myBtnBotLeft.layer.cornerRadius = myBtnBotLeft.frame.size.width/2
-                myBtnBotLeft.layer.borderColor = UIColor.redColor().CGColor
-                myBtnBotLeft.layer.borderWidth = 1
-                myBtnBotLeft.hidden = false
-                imageView.addSubview(myBtnBotLeft)
-                panBtnBotLeftGesture.addTarget(self, action: #selector(ViewController.panBtnBotLeftGesture(_:)))
-                myBtnBotLeft.addGestureRecognizer(panBtnBotLeftGesture)
-                
-                myBtnBotRight.frame = CGRectMake(arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - 5, arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - 5, 10, 10)
-                myBtnBotRight.layer.cornerRadius = myBtnBotRight.frame.size.width/2
-                myBtnBotRight.layer.borderColor = UIColor.redColor().CGColor
-                myBtnBotRight.layer.borderWidth = 1
-                myBtnBotRight.hidden = false
-                imageView.addSubview(myBtnBotRight)
-                panBtnBotRightGesture.addTarget(self, action: #selector(ViewController.panBtnBotRightGesture(_:)))
-                myBtnBotRight.addGestureRecognizer(panBtnBotRightGesture)
-                
-                arrTxtvLbl[i].textView.frame = arrTxtvLbl[i].label.frame
-                arrTxtvLbl[i].textView.textColor = arrTxtvLbl[i].label.textColor
-                
-                slider.value = Float(arrTxtvLbl[i].label.font.pointSize)
-                lbl.text = String(Int(arrTxtvLbl[i].label.font.pointSize))
-                
-                
-                for j in 0..<arrItem[1].count {
-                    if color[j] == arrTxtvLbl[i].label.textColor {
-                        pickerView.selectRow(j, inComponent: 1, animated: true)
-                    }
-                }
-                
-                for k in 0..<arrItem[0].count {
-                    if arrItem[0][k] == arrTxtvLbl[i].label.font.familyName {
-                        pickerView.selectRow(k, inComponent: 0, animated: true)
-                    }
-                }
-                
-                if arrTxtvLbl[i].label.textAlignment == .Left {
-                    segment.selectedSegmentIndex = 0
-                } else if arrTxtvLbl[i].label.textAlignment == .Center {
-                    segment.selectedSegmentIndex = 1
-                } else if arrTxtvLbl[i].label.textAlignment == .Right {
-                    segment.selectedSegmentIndex = 2
-                }
-            }
-        }
-        
-        for i in (0..<arrTxtvLbl.count).reverse() {
-            arrTxtvLbl[i].textView.endEditing(false)
-        }
-    }
-    
-    // MARK: Set TextView Font Size
-    @IBOutlet var lbl: UILabel!
-    @IBOutlet var slider: UISlider!
-    @IBAction func change(sender: UISlider) {
-        lbl.text = String(Int(slider.value))
-        for i in 0..<arrTxtvLbl.count {
-            if arrTxtvLbl[i].label.tag == 1  {
-                arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font!.fontWithSize(CGFloat(slider.value))
-                arrTxtvLbl[i].textView.frame.size = arrTxtvLbl[i].label.frame.size
-                arrTxtvLbl[i].textView.font = arrTxtvLbl[i].label.font
-                
-//                while arrTxtvLbl[i].label.intrinsicContentSize().height > arrTxtvLbl[i].label.frame.size.height {
-//                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height + 1
-//                }
-//                
-//                while arrTxtvLbl[i].label.intrinsicContentSize().height <= arrTxtvLbl[i].label.frame.size.height {
-//                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - 1
-//                }
-            }
-        }
-    }
-    
-    // MARK: Aligment TextView
-    @IBOutlet var segment: UISegmentedControl!
-    
-    @IBAction func segmentClick(sender: UISegmentedControl) {
-        switch segment.selectedSegmentIndex {
-        case 0:
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.textAlignment = NSTextAlignment.Left
-                }
-            }
-        case 1:
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.textAlignment = NSTextAlignment.Center
-                }
-            }
-        default:
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.textAlignment = NSTextAlignment.Right
-                }
-            }
-        }
-    }
-    
-    // MARK: Save Button
-    @IBAction func btnSaveClicked(sender: AnyObject) {
-        for i in 0..<arrTxtvLbl.count {
-            arrTxtvLbl[i].textView.endEditing(false)
-            arrTxtvLbl[i].label.layer.borderWidth = 0
-        }
-        myBtnTopLeft.hidden = true
-        myBtnTopRight.hidden = true
-        myBtnBotLeft.hidden = true
-        myBtnBotRight.hidden = true
-        let logo:UILabel = UILabel()
-        logo.frame = CGRect(x: 10, y: 180, width: 100, height: 100)
-        logo.text = "#QuangDog"
-        logo.textColor = UIColor.redColor()
-        imageView.addSubview(logo)
-        UIGraphicsBeginImageContext(imageView.frame.size)
-        imageView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
-        let imageSave = UIGraphicsGetImageFromCurrentImageContext()
-        //UIGraphicsEndImageContext()
-        UIImageWriteToSavedPhotosAlbum(imageSave, nil, nil, nil)
-        logo.removeFromSuperview()
-    }
-    
-    // MARK: PanGesture
-    func panGesture(sender: UIPanGestureRecognizer) {
-        let location = sender.locationInView(imageView)
-        let someRect = imageView.bounds
-        if (CGRectContainsPoint(someRect, location)) {
-            let translation = sender.translationInView(self.imageView)
-            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
-            sender.setTranslation(CGPointZero, inView: imageView)
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                myBtnTopLeft.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x - myBtnTopLeft.frame.size.width/2
-                myBtnTopLeft.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y - myBtnTopLeft.frame.size.height/2
-                myBtnTopRight.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - myBtnTopLeft.frame.size.width/2
-                myBtnTopRight.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y - myBtnTopLeft.frame.size.height/2
-                myBtnBotLeft.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x - myBtnTopLeft.frame.size.width/2
-                myBtnBotLeft.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - myBtnTopLeft.frame.size.height/2
-                myBtnBotRight.frame.origin.x = arrTxtvLbl[i].label.frame.origin.x + arrTxtvLbl[i].label.frame.size.width - myBtnTopLeft.frame.size.width/2
-                myBtnBotRight.frame.origin.y = arrTxtvLbl[i].label.frame.origin.y + arrTxtvLbl[i].label.frame.size.height - myBtnTopLeft.frame.size.height/2
-                }
-            }
-        }
-    }
-    
-    // MARK: Pan On Top Left Button
-    func panBtnTopLeftGesture(sender: UIPanGestureRecognizer) {
-        
-        //        let translation = sender.translationInView(self.view)
-        //
-        //        if let view = sender.view {
-        //            view.center = CGPoint(x:view.center.x + translation.x, y:view.center.y + translation.y)
-        //        }
-        //        sender.setTranslation(CGPointZero, inView: self.view)
-        
-        let location = sender.locationInView(view)
-        let someRect = view.bounds
-        if (CGRectContainsPoint(someRect, location)) {
-            let translation = sender.translationInView(imageView)
-            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
-            sender.setTranslation(CGPointZero, inView: imageView)
-            
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.frame.origin.x = (sender.view?.center.x)!
-                    arrTxtvLbl[i].label.frame.origin.y = (sender.view?.center.y)!
-                    
-                    arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width - translation.x
-                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - translation.y
-                    
-                    let sizeText: CGFloat = arrTxtvLbl[i].label.font.pointSize - translation.y
-                    arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
-                    
-                    let size = self.arrTxtvLbl[i].label.font!.pointSize
-                    slider.value = Float(size)
-                    lbl.text = String(Int(size))
-                    
-                    resizeFontLabel(arrTxtvLbl[i].label)
-                }
-            }
-            
-            myBtnTopRight.frame.origin.y = myBtnTopLeft.frame.origin.y
-            myBtnBotLeft.frame.origin.x = myBtnTopLeft.frame.origin.x
-        }
-    }
-    
-    // MARK: Pan On Top Right Button
-    func panBtnTopRightGesture(sender: UIPanGestureRecognizer) {
-        let location = sender.locationInView(view)
-        let someRect = view.bounds
-        if (CGRectContainsPoint(someRect, location)) {
-            let translation = sender.translationInView(view)
-            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
-            sender.setTranslation(CGPointZero, inView: view)
-            
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.frame.origin.x = (sender.view?.center.x)! - arrTxtvLbl[i].label.frame.size.width
-                    arrTxtvLbl[i].label.frame.origin.y = (sender.view?.center.y)!
-                    
-                    arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width + translation.x
-                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height - translation.y
-                    
-                    let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize - translation.y
-                    arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
-                    
-                    resizeFontLabel(arrTxtvLbl[i].label)
-                }
-            }
-            
-            myBtnTopLeft.frame.origin.y = myBtnTopRight.frame.origin.y
-            myBtnBotRight.frame.origin.x = myBtnTopRight.frame.origin.x
-        }
-    }
-    
-    // MARK: Pan On Bot Left Button
-    func panBtnBotLeftGesture(sender: UIPanGestureRecognizer) {
-        let location = sender.locationInView(view)
-        let someRect = view.bounds
-        if (CGRectContainsPoint(someRect, location)) {
-            let translation = sender.translationInView(view)
-            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
-            sender.setTranslation(CGPointZero, inView: view)
-            
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.frame.origin.x = (sender.view?.center.x)!
-                    arrTxtvLbl[i].label.frame.origin.y = (sender.view?.center.y)! - arrTxtvLbl[i].label.frame.size.height
-                    
-                    arrTxtvLbl[i].label.frame.size.width = arrTxtvLbl[i].label.frame.size.width - translation.x
-                    arrTxtvLbl[i].label.frame.size.height = arrTxtvLbl[i].label.frame.size.height + translation.y
-                    
-                    let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize + translation.y
-                    arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
-                    
-                    resizeFontLabel(arrTxtvLbl[i].label)
-                }
-            }
-            
-            myBtnTopLeft.frame.origin.x = myBtnBotLeft.frame.origin.x
-            myBtnBotRight.frame.origin.y = myBtnBotLeft.frame.origin.y
-        }
-    }
-    
-    // MARK: Pan On Bot Right Button
-    func panBtnBotRightGesture(sender: UIPanGestureRecognizer) {
-        let location = sender.locationInView(view)
-        let someRect = view.bounds
-        if (CGRectContainsPoint(someRect, location)) {
-            let translation = sender.translationInView(view)
-            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
-            sender.setTranslation(CGPointZero, inView: view)
-            
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.frame.origin.x = (sender.view?.center.x)! - arrTxtvLbl[i].label.frame.size.width
-                    arrTxtvLbl[i].label.frame.origin.y = (sender.view?.center.y)! - arrTxtvLbl[i].label.frame.size.height
-                    
-                    arrTxtvLbl[i].label.frame.size.width = translation.x + arrTxtvLbl[i].label.frame.size.width
-                    arrTxtvLbl[i].label.frame.size.height = translation.y + arrTxtvLbl[i].label.frame.size.height
-                    
-                    let sizeText:CGFloat = arrTxtvLbl[i].label.font.pointSize + translation.y
-                    arrTxtvLbl[i].label.font = arrTxtvLbl[i].label.font.fontWithSize(sizeText)
-                    
-                    resizeFontLabel(arrTxtvLbl[i].label)
-                }
-            }
-            
-            myBtnTopRight.frame.origin.x = myBtnBotRight.frame.origin.x
-            myBtnBotLeft.frame.origin.y = myBtnBotRight.frame.origin.y
-        }
-    }
-    
-    // MARK: textViewDidEndEditing
-    func textViewDidEndEditing(textView: UITextView) {
-        for i in (0..<arrTxtvLbl.count).reverse(){
-            if textView == arrTxtvLbl[i].textView && textView.text == "" {
-                arrTxtvLbl[i].textView.removeFromSuperview()
-                arrTxtvLbl[i].label.removeFromSuperview()
-                arrTxtvLbl.removeAtIndex(i)
-            } else if textView == arrTxtvLbl[i].textView && textView.text != "" {
-                arrTxtvLbl[i].textView.hidden = true
-                arrTxtvLbl[i].label.text = arrTxtvLbl[i].textView.text
-                arrTxtvLbl[i].label.hidden = false
-                arrTxtvLbl[i].label.font = arrTxtvLbl[i].textView.font
-                let size = self.arrTxtvLbl[i].textView.font!.pointSize
-                slider.value = Float(size)
-                lbl.text = String(Int(size))
-                
-                resizeFontLabel(arrTxtvLbl[i].label)
-//                print( arrTxtvLbl[i].label.frame.size.height)
-//                print( arrTxtvLbl[i].label.frame.size.width)
-//                print(arrTxtvLbl[i].label.intrinsicContentSize())
-//                
-//                let temp = arrTxtvLbl[i].label.intrinsicContentSize().width / arrTxtvLbl[i].label.frame.size.width
-//                if arrTxtvLbl[i].label.intrinsicContentSize().width <= arrTxtvLbl[i].label.frame.size.width * CGFloat(Int(temp + 1)) {
-//                    arrTxtvLbl[i].label.frame.size.height = 21 * CGFloat(Int(temp) + 1)
-//                } else {
-//                    arrTxtvLbl[i].label.frame.size.height = 21 * CGFloat(Int(temp))
-//                }
-            }
-        }
-    }
-    
-    // MARK: - UIImagePickerControllerDelegate Methods
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imageView.contentMode = .ScaleAspectFit
-            imageView.image = pickedImage
-        }
-        
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    // MARK: PickerView
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        return 2
-    }
-    
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return arrItem[component].count
-    }
-    
-    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
-        if component == 1 {
-            let textColor:UIView = UIView(frame: CGRectMake(0, 0, 50, 50))
-            textColor.backgroundColor = color[row]
-            return textColor
-        } else {
-            let textFont:UILabel = UILabel(frame: CGRectMake(0, 0, 200 , 50))
-            textFont.text = arrItem[0][row]
-            textFont.textAlignment = NSTextAlignment.Center
-            return textFont
-        }
-    }
-    
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if component == 1 {
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.textColor = color[row]
-                }
-            }
-        } else {
-            for i in 0..<arrTxtvLbl.count {
-                if arrTxtvLbl[i].label.tag == 1 {
-                    arrTxtvLbl[i].label.font = UIFont(name: arrItem[0][row], size: CGFloat(slider.value))
-                }
-            }
-        }
-    }
-    
-    func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        return 50
-    }
-    
-    // MARK: CollectionView
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return arrImage.count
+        if collectionView == colViewItem {
+            return arrItem.count
+        } else if collectionView == colFont {
+            return arrFont.count
+        } else {
+            if indexItem.first == nil {
+                return 0
+            }
+            if indexItem.first?.row == 0 {
+                return arrBackgroundColor.count
+            } else if indexItem.first?.row == 1 {
+                return arrPattern.count
+            } else if indexItem.first?.row == 2 {
+                return arrBackgroundImage.count
+            } else {
+                return 0
+            }
+        }
     }
-    
+
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! CollectionViewCell
-        let data = arrImage[indexPath.row]
-        UIGraphicsBeginImageContext(self.myView.frame.size)
-        UIImage(named: data.image)?.drawInRect(self.myView.bounds)
-        let imageView = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        cell.myView.backgroundColor = UIColor(patternImage: imageView)
-        return cell
+        if collectionView == colViewItem {
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! OptionsCollectionViewCell
+            let data = arrItem[indexPath.row]
+            cell.imageOption.image = UIImage(named: data.items)
+            
+            if indexPath.row == 0 && indexPath.row == indexItem.first?.row {
+                cell.imageOption.image = nil
+                cell.imageOption.backgroundColor = imgView.backgroundColor
+            } else if indexPath.row == 1 &&  indexPath.row == indexItem.first?.row {
+                cell.imageOption.image = imgView.image
+            } else if indexPath.row == 2 && indexPath.row == indexItem.first?.row {
+                cell.imageOption.image = imgView.image
+            }
+            
+            return cell
+        } else if collectionView == colFont {
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! FontCollectionViewCell
+            cell.lblFont.text = arrFont[indexPath.row]
+            cell.lblFont.font = UIFont(name: arrFont[indexPath.row], size: (cell.lblFont.font?.pointSize)!)
+            return cell
+        }else {
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! BackgroundCollectionViewCell
+            if indexItem.first?.row == 0{
+                let data = arrBackgroundColor[indexPath.row]
+                cell.bgColorImage.image = nil
+                cell.bgColorImage.backgroundColor = data.bgroundColor
+                cell.bgColorImage.layer.borderColor = UIColor.whiteColor().CGColor
+                cell.bgColorImage.layer.borderWidth = 1
+            } else if indexItem.first?.row == 1{
+                let data = arrPattern[indexPath.row]
+                cell.bgColorImage.image = nil
+                cell.bgColorImage.image = UIImage(named: data.pattern)
+                cell.bgColorImage.layer.borderColor = UIColor.whiteColor().CGColor
+                cell.bgColorImage.layer.borderWidth = 1
+            } else if indexItem.first?.row == 2 {
+                let data = arrBackgroundImage[indexPath.row]
+                cell.bgColorImage.image = nil
+                cell.bgColorImage.image = UIImage(named: data.backgroundImage)
+                cell.bgColorImage.layer.borderColor = UIColor.whiteColor().CGColor
+                cell.bgColorImage.layer.borderWidth = 1
+            }
+            return cell
+        }
     }
-    
+
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let data = arrImage[indexPath.row]
-        UIGraphicsBeginImageContext(self.myView.frame.size)
-        UIImage(named: data.image)?.drawInRect(self.myView.bounds)
-        let imageView = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        self.imageView.backgroundColor = UIColor(patternImage: imageView)
+        if collectionView == colViewItem {
+            indexItem.removeAll()
+            indexItem.append(indexPath)
+            
+            let cell = collectionView.cellForItemAtIndexPath(indexPath) as! OptionsCollectionViewCell
+            imgItem.frame = cell.imageOption.frame
+            cell.addSubview(imgItem)
+            colViewBackgroundColor.hidden = false
+            if indexPath.row == 3 {
+                colViewBackgroundColor.hidden = true
+            } else if indexPath.row == 4 {
+                imagePicker.allowsEditing = false
+                imagePicker.sourceType = .PhotoLibrary
+                presentViewController(imagePicker, animated: true, completion: nil)
+                colViewBackgroundColor.hidden = true
+            }
+        } else if collectionView == colViewBackgroundColor {
+            indexBackground.removeAll()
+            indexBackground.append(indexPath)
+            
+            if indexItem.first?.row == 0 {
+                imgView.image = nil
+                let data = arrBackgroundColor[indexPath.row]
+                imgView.backgroundColor = data.bgroundColor
+            } else if indexItem.first?.row == 1 {
+                imgView.image = nil
+                let data = arrPattern[indexPath.row]
+                imgView.image = UIImage(named: data.pattern)
+            } else if indexItem.first?.row == 2 {
+                imgView.image = nil
+                let data = arrBackgroundImage[indexPath.row]
+                imgView.image = UIImage(named: data.backgroundImage)
+            }
+        }
     }
     
+    // MARK: arrItem
+    func arrItemAppend(){
+        arrItem.append(ItemModel.init(item: "FF0000.jpg"))
+        arrItem.append(ItemModel.init(item: "smoke4.jpg"))
+        arrItem.append(ItemModel.init(item: "0CUCBJX4FZ.jpg"))
+        arrItem.append(ItemModel.init(item: "CP_Camera"))
+        arrItem.append(ItemModel.init(item: "CP_Photo"))
+    }
     
-    // Resize font size label
-    func resizeFontLabel(label: UILabel) {
-        dispatch_async(dispatch_get_main_queue(), {
-            
-            var fontsize = label.font?.pointSize
-            label.layoutIfNeeded()
-            
-            while (fontsize > 1.0 &&  label.sizeThatFits(CGSizeMake(label.frame.size.width, CGFloat(FLT_MAX))).height >= label.frame.size.height) {
-                fontsize = fontsize! - 0.5
-                label.font = label.font!.fontWithSize(fontsize!)
-            }
-        })
-        dispatch_async(dispatch_get_main_queue(), {
-            
-            var fontsize = label.font?.pointSize
-            label.layoutIfNeeded()
-            
-            while (label.sizeThatFits(CGSizeMake(label.frame.size.width, CGFloat(FLT_MAX))).height < label.frame.size.height ) {
-                fontsize = fontsize! + 0.5
-                label.font = label.font!.fontWithSize(fontsize!)
-            }
-        })
+    // MARK: arrBackgroundColor
+    func arrBackgroundColorAppend() {
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.blackColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.darkGrayColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.lightGrayColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.whiteColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.grayColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.redColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.greenColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.blueColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.cyanColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.yellowColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.magentaColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.orangeColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.purpleColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.brownColor()))
+    }
+    
+    // MARK: arrPattern
+    func arrPatternAppend() {
+        arrPattern.append(PatternModel.init(pat: "2.jpg"))
+        arrPattern.append(PatternModel.init(pat: "galaxy-bg-3.jpg"))
+        arrPattern.append(PatternModel.init(pat: "galaxy-bg-8.jpg"))
+        arrPattern.append(PatternModel.init(pat: "grunge2_4.jpg"))
+        arrPattern.append(PatternModel.init(pat: "smoke4.jpg"))
+        arrPattern.append(PatternModel.init(pat: "vintage_clouds_3.jpg"))
+        arrPattern.append(PatternModel.init(pat: "vintage_clouds_7.jpg"))
+        arrPattern.append(PatternModel.init(pat: "wg_blurred_worn_bg8.jpg"))
+        arrPattern.append(PatternModel.init(pat: "wg_gemstone_10.jpg"))
+    }
+    
+    // MARK: arrBackgroundImage
+    func arrBackgroundImageAppend() {
+        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "0CUCBJX4FZ.jpg"))
+        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "1FA6SEYFHF.jpg"))
+        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "2A1RBTLS50.jpg"))
+        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "GEJ6ML9NHQ.jpg"))
+        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "ZOL7UI7UE6.jpg"))
+    }
+    
+    // MARK: processGradientLayer
+    func processGradientLayer() {
+        gradientLayer.frame = gradientLayerView.bounds
+        let whiteColorTop = UIColor.whiteColor().CGColor as CGColorRef
+        let blackColorBottom = UIColor.lightGrayColor().CGColor as CGColorRef
+        gradientLayer.colors = [whiteColorTop, blackColorBottom]
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayerView.layer.addSublayer(gradientLayer)
+    }
+    
+    // MARK: colorTemplate
+    func colorTemplate() {
+        let color: HSBColorPicker = HSBColorPicker()
+        self.view.addSubview(color)
+        
+        color.autoresizesSubviews = false
+        color.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addConstraint(NSLayoutConstraint(item: color, attribute: .Top, relatedBy: .Equal, toItem: gradientLayerView, attribute: .Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: color, attribute: .Bottom , relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: color, attribute: .Left, relatedBy: .Equal, toItem: self.view, attribute: .Left, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: color, attribute: .Right, relatedBy: .Equal, toItem: self.view, attribute: .Right, multiplier: 1, constant: 0))
     }
 }
+
+// MARK:
+internal protocol HSBColorPickerDelegate : NSObjectProtocol {
+    func HSBColorColorPickerTouched(sender:HSBColorPicker, color:UIColor, point:CGPoint, state:UIGestureRecognizerState)
+}
+@IBDesignable class HSBColorPicker : UIView {
+    
+    weak internal var delegate: HSBColorPickerDelegate?
+    let saturationExponentTop:Float = 2.0
+    let saturationExponentBottom:Float = 1.3
+    
+    @IBInspectable var elementSize: CGFloat = 1.0 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
+    private func initialize() {
+        self.clipsToBounds = true
+        let touchGesture = UILongPressGestureRecognizer(target: self, action: #selector(HSBColorPicker.touchedColor(_:)))
+        touchGesture.minimumPressDuration = 0
+        touchGesture.allowableMovement = CGFloat.max
+        self.addGestureRecognizer(touchGesture)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        initialize()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialize()
+    }
+    
+    override func drawRect(rect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        
+        for y in (0 as CGFloat).stride(to: rect.height, by: elementSize) {
+            
+            var saturation = y < rect.height / 2.0 ? CGFloat(2 * y) / rect.height : 2.0 * CGFloat(rect.height - y) / rect.height
+            saturation = CGFloat(powf(Float(saturation), y < rect.height / 2.0 ? saturationExponentTop : saturationExponentBottom))
+            let brightness = y < rect.height / 2.0 ? CGFloat(1.0) : 2.0 * CGFloat(rect.height - y) / rect.height
+            
+            for x in (0 as CGFloat).stride(to: rect.width, by: elementSize) {
+                let hue = x / rect.width
+                let color = UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1.0)
+                CGContextSetFillColorWithColor(context, color.CGColor)
+                CGContextFillRect(context, CGRect(x:x, y:y, width:elementSize,height:elementSize))
+            }
+        }
+    }
+    
+    func getColorAtPoint(point:CGPoint) -> UIColor {
+        let roundedPoint = CGPoint(x:elementSize * CGFloat(Int(point.x / elementSize)),
+                                   y:elementSize * CGFloat(Int(point.y / elementSize)))
+        var saturation = roundedPoint.y < self.bounds.height / 2.0 ? CGFloat(2 * roundedPoint.y) / self.bounds.height
+            : 2.0 * CGFloat(self.bounds.height - roundedPoint.y) / self.bounds.height
+        saturation = CGFloat(powf(Float(saturation), roundedPoint.y < self.bounds.height / 2.0 ? saturationExponentTop : saturationExponentBottom))
+        let brightness = roundedPoint.y < self.bounds.height / 2.0 ? CGFloat(1.0) : 2.0 * CGFloat(self.bounds.height - roundedPoint.y) / self.bounds.height
+        let hue = roundedPoint.x / self.bounds.width
+        return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1.0)
+    }
+    
+    func getPointForColor(color:UIColor) -> CGPoint {
+        var hue:CGFloat=0;
+        var saturation:CGFloat=0;
+        var brightness:CGFloat=0;
+        color.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: nil);
+        
+        var yPos:CGFloat = 0
+        let halfHeight = (self.bounds.height / 2)
+        
+        if (brightness >= 0.99) {
+            let percentageY = powf(Float(saturation), 1.0 / saturationExponentTop)
+            yPos = CGFloat(percentageY) * halfHeight
+        } else {
+            //use brightness to get Y
+            yPos = halfHeight + halfHeight * (1.0 - brightness)
+        }
+        
+        let xPos = hue * self.bounds.width
+        
+        return CGPoint(x: xPos, y: yPos)
+    }
+    
+    func touchedColor(gestureRecognizer: UILongPressGestureRecognizer){
+        let point = gestureRecognizer.locationInView(self)
+        let color = getColorAtPoint(point)
+        
+        self.delegate?.HSBColorColorPickerTouched(self, color: color, point: point, state:gestureRecognizer.state)
+    }
+}
+

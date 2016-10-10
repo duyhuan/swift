@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "33D4D86A1D8785970018045A"
+               BlueprintIdentifier = "339EAEC31DA4B12B00A7B0AC"
                BuildableName = "EditImage.app"
                BlueprintName = "EditImage"
                ReferencedContainer = "container:EditImage.xcodeproj">
@@ -32,7 +32,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33D4D86A1D8785970018045A"
+            BlueprintIdentifier = "339EAEC31DA4B12B00A7B0AC"
             BuildableName = "EditImage.app"
             BlueprintName = "EditImage"
             ReferencedContainer = "container:EditImage.xcodeproj">
@@ -55,7 +55,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33D4D86A1D8785970018045A"
+            BlueprintIdentifier = "339EAEC31DA4B12B00A7B0AC"
             BuildableName = "EditImage.app"
             BlueprintName = "EditImage"
             ReferencedContainer = "container:EditImage.xcodeproj">
@@ -74,7 +74,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33D4D86A1D8785970018045A"
+            BlueprintIdentifier = "339EAEC31DA4B12B00A7B0AC"
             BuildableName = "EditImage.app"
             BlueprintName = "EditImage"
             ReferencedContainer = "container:EditImage.xcodeproj">
