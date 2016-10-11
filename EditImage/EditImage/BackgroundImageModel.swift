@@ -11,10 +11,6 @@ import UIKit
 class BackgroundImageModel: NSObject {
     var backgroundImage: String! = nil
     
-    override init() {
-        super.init()
-    }
-    
     init(bgImg: String) {
         backgroundImage = bgImg
     }

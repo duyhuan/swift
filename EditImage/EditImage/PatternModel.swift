@@ -11,10 +11,6 @@ import UIKit
 class PatternModel: NSObject {
     var pattern: String! = nil
     
-    override init() {
-        super.init()
-    }
-    
     init(pat: String) {
         pattern = pat
     }

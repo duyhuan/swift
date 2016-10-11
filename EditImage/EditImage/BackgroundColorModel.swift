@@ -11,10 +11,6 @@ import UIKit
 class BackgroundColorModel: NSObject {
     var bgroundColor: UIColor! = nil
     
-    override init() {
-        super.init()
-    }
-    
     init(bgColor: UIColor) {
         bgroundColor = bgColor
     }

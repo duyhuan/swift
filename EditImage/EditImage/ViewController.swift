@@ -9,7 +9,7 @@
 import UIKit
 import Social
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate {
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var arrBackgroundColor: [BackgroundColorModel] = []
     var arrBackgroundImage: [BackgroundImageModel] = []
@@ -23,6 +23,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     let selectedBackgroundColor: UIImageView = UIImageView()
     let selectedPattern: UIImageView = UIImageView()
     let selectedBackgroundTemplate: UIImageView = UIImageView()
+    var stSelected = SetSelected()
     
     var indexItem = [NSIndexPath]() {
         didSet {
@@ -51,6 +52,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        imagePicker.delegate = self
+        
         colViewBackground.delegate = self
         colViewBackground.dataSource = self
         colViewBackground.backgroundColor = UIColor.darkGrayColor()
@@ -58,8 +61,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         arrBackgroundColorAppend()
         arrPatternAppend()
         arrBackgroundImageAppend()
-        
-        imgView.image = UIImage(named: "0CUCBJX4FZ.jpg")
         
         colFont.delegate = self
         colFont.dataSource = self
@@ -72,6 +73,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         setViewButton()
         processGradientLayer()
         colorTemplate()
+        
+        setImgViewBackground("1FA6SEYFHF.jpg")
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -143,12 +146,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 imgView.backgroundColor = data.bgroundColor
                 btnBackroundColor.backgroundColor = data.bgroundColor
                 setSelectedBackground()
-            } else if indexItem.first?.row == 1 {imgView.image = nil
+            } else if indexItem.first?.row == 1 {
                 let data = arrPattern[indexPath.row]
                 setImgViewBackground(data.pattern)
                 btnPattern.setBackgroundImage(UIImage(named: data.pattern), forState: .Normal)
                 setSelectedBackground()
-            } else if indexItem.first?.row == 2 {imgView.image = nil
+            } else if indexItem.first?.row == 2 {
                 let data = arrBackgroundImage[indexPath.row]
                 setImgViewBackground(data.backgroundImage)
                 btnBackgroundTemplate.setBackgroundImage(UIImage(named: data.backgroundImage), forState: .Normal)
@@ -176,8 +179,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func setViewButton() {
         btnBackroundColor.backgroundColor = UIColor.lightGrayColor()
+        btnBackroundColor.alpha = 0.5
         btnPattern.setBackgroundImage(UIImage(named: "smoke4.jpg"), forState: .Normal)
+        btnPattern.alpha = 0.5
         btnBackgroundTemplate.setBackgroundImage(UIImage(named: "0CUCBJX4FZ.jpg"), forState: .Normal)
+        btnBackgroundTemplate.alpha = 0.5
         btnCamera.setBackgroundImage(UIImage(named: "CP_Camera"), forState: .Normal)
         btnGallery.setBackgroundImage(UIImage(named: "CP_Photo"), forState: .Normal)
         
@@ -193,9 +199,17 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     @IBAction func btnShareOnFaceClicked(sender: UIButton) {
-        let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
-        composeSheet.addImage(imgView.image)
-        presentViewController(composeSheet, animated: true, completion: nil)
+        if imgView.image != nil {
+            UIGraphicsBeginImageContext(imgView.frame.size)
+            imgView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+            let imageSave = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            UIImageWriteToSavedPhotosAlbum(imageSave, nil, nil, nil)
+            
+            let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+            composeSheet.addImage(imageSave)
+            presentViewController(composeSheet, animated: true, completion: nil)
+        }
     }
     
     @IBAction func btnBackroundColorClicked(sender: UIButton) {
@@ -204,35 +218,25 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         colViewBackground.hidden = false
     }
     
-    func setSelectedBackground() {
-        selectedBackgroundColor.frame = btnBackroundColor.frame
-        selectedBackgroundColor.image = UIImage(named: "CP_Selected")
-        viewButton.addSubview(selectedBackgroundColor)
-        selectedBackgroundColor.hidden = true
-        
-        selectedPattern.frame = btnPattern.frame
-        selectedPattern.image = UIImage(named: "CP_Selected")
-        viewButton.addSubview(selectedPattern)
-        selectedPattern.hidden = true
-        
-        selectedBackgroundTemplate.frame = btnBackgroundTemplate.frame
-        selectedBackgroundTemplate.image = UIImage(named: "CP_Selected")
-        viewButton.addSubview(selectedBackgroundTemplate)
-        selectedBackgroundTemplate.hidden = true
-        
-        if indexItem.first?.row == 0 {
-            selectedBackgroundColor.hidden = false
-            selectedPattern.hidden = true
-            selectedBackgroundTemplate.hidden = true
-        } else if indexItem.first?.row == 1 {
-            selectedPattern.hidden = false
-            selectedBackgroundColor.hidden = true
-            selectedBackgroundTemplate.hidden = true
-        } else if indexItem.first?.row == 2 {
-            selectedBackgroundTemplate.hidden = false
-            selectedBackgroundColor.hidden = true
-            selectedPattern.hidden = true
+    func checkSTSelected() {
+        if (stSelected.selectedBackground != nil) {
+            stSelected.selectedBackground.removeFromSuperview()
+            stSelected.btnTemporary.alpha = 0.5
         }
+    }
+    
+    func setSelectedBackground() {
+        if indexItem.first?.row == 0 {
+            checkSTSelected()
+            stSelected = SetSelected.init(selectedBg: selectedBackgroundColor, btnTemp: btnBackroundColor)
+        } else if indexItem.first?.row == 1 {
+            checkSTSelected()
+            stSelected = SetSelected.init(selectedBg: selectedPattern, btnTemp: btnPattern)
+        } else if indexItem.first?.row == 2 {
+            checkSTSelected()
+            stSelected = SetSelected.init(selectedBg: selectedBackgroundTemplate, btnTemp: btnBackgroundTemplate)
+        }
+        viewButton.addSubview(stSelected.selectedBackground)
     }
     
     @IBAction func btnPatternClicked(sender: UIButton) {
@@ -258,14 +262,29 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         presentViewController(imagePicker, animated: true, completion: nil)
     }
     
-    func setImgViewBackground(str: String) {
-        imgView.contentMode =  UIViewContentMode.ScaleAspectFill
-        imgView.clipsToBounds = true
-        imgView.image = UIImage(named: str)
-        imgView.center = view.center
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            imgView.contentMode = .ScaleAspectFit
+            imgView.image = pickedImage
+        }
         
-        UIGraphicsBeginImageContext(imgView.frame.size)
-        imgView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func setImgViewBackground(str: String) {
+        let imgViewBackground = UIImageView()
+        imgViewBackground.frame = imgView.frame
+        imgViewBackground.contentMode =  UIViewContentMode.ScaleAspectFill
+        imgViewBackground.clipsToBounds = true
+        imgViewBackground.image = UIImage(named: str)
+        imgViewBackground.center = view.center
+        
+        UIGraphicsBeginImageContext(imgViewBackground.frame.size)
+        imgViewBackground.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         let imageSave = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
@@ -286,16 +305,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     func colorTemplate() {
-        let color: HSBColorPicker = HSBColorPicker()
-        self.view.addSubview(color)
+        let colorPicker: HSBColorPicker = HSBColorPicker()
+        self.view.addSubview(colorPicker)
         
-        color.autoresizesSubviews = false
-        color.translatesAutoresizingMaskIntoConstraints = false
+        colorPicker.autoresizesSubviews = false
+        colorPicker.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addConstraint(NSLayoutConstraint(item: color, attribute: .Top, relatedBy: .Equal, toItem: gradientLayerView, attribute: .Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: color, attribute: .Bottom , relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: color, attribute: .Left, relatedBy: .Equal, toItem: self.view, attribute: .Left, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: color, attribute: .Right, relatedBy: .Equal, toItem: self.view, attribute: .Right, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Top, relatedBy: .Equal, toItem: gradientLayerView, attribute: .Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Bottom , relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Left, relatedBy: .Equal, toItem: self.view, attribute: .Left, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Right, relatedBy: .Equal, toItem: self.view, attribute: .Right, multiplier: 1, constant: 0))
     }
     
     // MARK: Array source
