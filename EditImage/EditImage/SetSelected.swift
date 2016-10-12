@@ -21,8 +21,8 @@ class SetSelected: NSObject {
         selectedBackground = selectedBg
         btnTemporary = btnTemp
         selectedBackground.image = UIImage(named: "CP_Selected")
+        selectedBackground.contentMode = .ScaleAspectFit
         selectedBackground.frame = btnTemporary.frame
         btnTemp.alpha = 1
     }
-    
 }

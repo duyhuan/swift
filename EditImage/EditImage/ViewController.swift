@@ -15,15 +15,14 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var arrBackgroundImage: [BackgroundImageModel] = []
     var arrPattern: [PatternModel] = []
     let imagePicker = UIImagePickerController()
-    let userDF: NSUserDefaults = NSUserDefaults()
-    let gradientLayer: CAGradientLayer = CAGradientLayer()
-    let item: UIImageView = UIImageView()
     let arrFont: [String] = UIFont.familyNames()
     let tapOnImgViewToHiddenColBackGroundGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     let selectedBackgroundColor: UIImageView = UIImageView()
     let selectedPattern: UIImageView = UIImageView()
     let selectedBackgroundTemplate: UIImageView = UIImageView()
     var stSelected = SetSelected()
+    let imgGradient: UIImageView = UIImageView()
+    let colorPicker: HSBColorPicker = HSBColorPicker()
     
     var indexItem = [NSIndexPath]() {
         didSet {
@@ -48,6 +47,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     @IBOutlet var colFont: UICollectionView!
     @IBOutlet var slider: UISlider!
     @IBOutlet var gradientLayerView: UIView!
+    @IBOutlet var imgSmallSize: UIImageView!
+    @IBOutlet var imgBigSize: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,10 +72,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         imgView.multipleTouchEnabled = true
         
         setViewButton()
-        processGradientLayer()
+        setGradient()
         colorTemplate()
         
         setImgViewBackground("1FA6SEYFHF.jpg")
+        
+        slider.setThumbImage(UIImage(named: "CP_Point"), forState: .Normal)
+        imgSmallSize.image = UIImage(named: "CP_SizeSmall")
+        imgSmallSize.contentMode = .ScaleAspectFit
+        imgBigSize.image = UIImage(named: "CP_SizeBig")
+        imgBigSize.contentMode = .ScaleAspectFit
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -177,25 +184,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         imgView.addSubview(lblText)
     }
     
-    func setViewButton() {
-        btnBackroundColor.backgroundColor = UIColor.lightGrayColor()
-        btnBackroundColor.alpha = 0.5
-        btnPattern.setBackgroundImage(UIImage(named: "smoke4.jpg"), forState: .Normal)
-        btnPattern.alpha = 0.5
-        btnBackgroundTemplate.setBackgroundImage(UIImage(named: "0CUCBJX4FZ.jpg"), forState: .Normal)
-        btnBackgroundTemplate.alpha = 0.5
-        btnCamera.setBackgroundImage(UIImage(named: "CP_Camera"), forState: .Normal)
-        btnGallery.setBackgroundImage(UIImage(named: "CP_Photo"), forState: .Normal)
-        
-        let widthButton = (viewButton.frame.size.width - 60) / 5
-        btnBackroundColor.autoresizesSubviews = false
-        btnBackroundColor.translatesAutoresizingMaskIntoConstraints = false
-        viewButton.addConstraint(NSLayoutConstraint(item: btnBackroundColor, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .Width, multiplier: 1, constant: widthButton))
-        
-        let widthViewButton = widthButton + 20
-        viewButton.autoresizesSubviews = false
-        viewButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: viewButton, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1, constant: widthViewButton))
+    @IBAction func btnBackroundColorClicked(sender: UIButton) {
+        indexItem.removeAll()
+        indexItem.append(NSIndexPath(forRow: 0, inSection: 0))
+        colViewBackground.hidden = false
     }
     
     @IBAction func btnShareOnFaceClicked(sender: UIButton) {
@@ -212,10 +204,18 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
-    @IBAction func btnBackroundColorClicked(sender: UIButton) {
-        indexItem.removeAll()
-        indexItem.append(NSIndexPath(forRow: 0, inSection: 0))
-        colViewBackground.hidden = false
+    func setViewButton() {
+        btnBackroundColor.backgroundColor = UIColor.lightGrayColor()
+        btnPattern.setBackgroundImage(UIImage(named: "smoke4.jpg"), forState: .Normal)
+        btnBackgroundTemplate.setBackgroundImage(UIImage(named: "1FA6SEYFHF.jpg"), forState: .Normal)
+        btnBackroundColor.alpha = 0.5
+        btnPattern.alpha = 0.5
+        btnBackgroundTemplate.alpha = 0.5
+        btnCamera.setBackgroundImage(UIImage(named: "CP_Camera"), forState: .Normal)
+        btnGallery.setBackgroundImage(UIImage(named: "CP_Photo"), forState: .Normal)
+        
+        stSelected = SetSelected.init(selectedBg: selectedBackgroundTemplate, btnTemp: btnBackgroundTemplate)
+        viewButton.addSubview(stSelected.selectedBackground)
     }
     
     func checkSTSelected() {
@@ -295,23 +295,32 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         colViewBackground.hidden = true
     }
     
-    func processGradientLayer() {
-        gradientLayer.frame = gradientLayerView.bounds
-        let whiteColorTop = UIColor.whiteColor().CGColor as CGColorRef
-        let blackColorBottom = UIColor.lightGrayColor().CGColor as CGColorRef
-        gradientLayer.colors = [whiteColorTop, blackColorBottom]
-        gradientLayer.locations = [0.0, 1.0]
-        gradientLayerView.layer.addSublayer(gradientLayer)
+    func setGradient() {
+        imgGradient.image = UIImage(named: "CP_Gradient")
+        self.view.addSubview(imgGradient)
+        
+        imgGradient.autoresizesSubviews = false
+        imgGradient.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .Top, relatedBy: .Equal, toItem: slider, attribute: .Bottom, multiplier: 1, constant: 10))
+        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1, constant: 10))
+//        gradientLayer.frame = gradientLayerView.bounds
+//        let whiteColorTop = UIColor.whiteColor().CGColor as CGColorRef
+//        let blackColorBottom = UIColor.lightGrayColor().CGColor as CGColorRef
+//        gradientLayer.colors = [whiteColorTop, blackColorBottom]
+//        gradientLayer.locations = [0.0, 1.0]
+//        gradientLayerView.layer.addSublayer(gradientLayer)
     }
     
     func colorTemplate() {
-        let colorPicker: HSBColorPicker = HSBColorPicker()
         self.view.addSubview(colorPicker)
         
         colorPicker.autoresizesSubviews = false
         colorPicker.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Top, relatedBy: .Equal, toItem: gradientLayerView, attribute: .Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Top, relatedBy: .Equal, toItem: imgGradient, attribute: .Bottom, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Bottom , relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Left, relatedBy: .Equal, toItem: self.view, attribute: .Left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Right, relatedBy: .Equal, toItem: self.view, attribute: .Right, multiplier: 1, constant: 0))
@@ -354,7 +363,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "GEJ6ML9NHQ.jpg"))
         arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "ZOL7UI7UE6.jpg"))
     }
-    
 }
 
 extension String {
