@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		332CFB511DAAB45200538B33 /* FF0000.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 332CFB501DAAB45200538B33 /* FF0000.jpg */; };
-		336910921DACCB4D00EA9637 /* SetSelected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336910911DACCB4D00EA9637 /* SetSelected.swift */; };
+		336910921DACCB4D00EA9637 /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336910911DACCB4D00EA9637 /* SelectButton.swift */; };
 		3370B4041DA8E57100C267AD /* FontCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3370B4031DA8E57100C267AD /* FontCollectionViewCell.swift */; };
 		337B000F1DAB4535006421C4 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337B000E1DAB4535006421C4 /* ColorPicker.swift */; };
 		33950A5E1DA60EEF0033F4F2 /* PatternModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33950A5D1DA60EEF0033F4F2 /* PatternModel.swift */; };
@@ -38,7 +38,7 @@
 
 /* Begin PBXFileReference section */
 		332CFB501DAAB45200538B33 /* FF0000.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = FF0000.jpg; sourceTree = "<group>"; };
-		336910911DACCB4D00EA9637 /* SetSelected.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetSelected.swift; sourceTree = "<group>"; };
+		336910911DACCB4D00EA9637 /* SelectButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
 		3370B4031DA8E57100C267AD /* FontCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontCollectionViewCell.swift; sourceTree = "<group>"; };
 		337B000E1DAB4535006421C4 /* ColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 		33950A5D1DA60EEF0033F4F2 /* PatternModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatternModel.swift; sourceTree = "<group>"; };
@@ -110,7 +110,7 @@
 				33950A631DA61FE30033F4F2 /* BackgroundCollectionViewCell.swift */,
 				3370B4031DA8E57100C267AD /* FontCollectionViewCell.swift */,
 				337B000E1DAB4535006421C4 /* ColorPicker.swift */,
-				336910911DACCB4D00EA9637 /* SetSelected.swift */,
+				336910911DACCB4D00EA9637 /* SelectButton.swift */,
 			);
 			path = EditImage;
 			sourceTree = "<group>";
@@ -245,7 +245,7 @@
 				33950A601DA60F040033F4F2 /* BackgroundColorModel.swift in Sources */,
 				33950A641DA61FE30033F4F2 /* BackgroundCollectionViewCell.swift in Sources */,
 				33950A5E1DA60EEF0033F4F2 /* PatternModel.swift in Sources */,
-				336910921DACCB4D00EA9637 /* SetSelected.swift in Sources */,
+				336910921DACCB4D00EA9637 /* SelectButton.swift in Sources */,
 				337B000F1DAB4535006421C4 /* ColorPicker.swift in Sources */,
 				339EAF401DA4BD4400A7B0AC /* BackgroundImageModel.swift in Sources */,
 				3370B4041DA8E57100C267AD /* FontCollectionViewCell.swift in Sources */,

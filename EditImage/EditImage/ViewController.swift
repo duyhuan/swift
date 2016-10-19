@@ -20,9 +20,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     let selectedBackgroundColor: UIImageView = UIImageView()
     let selectedPattern: UIImageView = UIImageView()
     let selectedBackgroundTemplate: UIImageView = UIImageView()
-    var stSelected = SetSelected()
     let imgGradient: UIImageView = UIImageView()
     let colorPicker: HSBColorPicker = HSBColorPicker()
+    var stSelectBackroundColor = SelectButton()
+    var stSelectPattern = SelectButton()
+    var stSelectBackgroundTemplate = SelectButton()
     
     var indexItem = [NSIndexPath]() {
         didSet {
@@ -72,6 +74,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         imgView.multipleTouchEnabled = true
         
         setViewButton()
+        setSelectBackground()
         setGradient()
         colorTemplate()
         
@@ -152,17 +155,23 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 let data = arrBackgroundColor[indexPath.row]
                 imgView.backgroundColor = data.bgroundColor
                 btnBackroundColor.backgroundColor = data.bgroundColor
-                setSelectedBackground()
+                stSelectBackroundColor.setChosen(true)
+                stSelectPattern.setChosen(false)
+                stSelectBackgroundTemplate.setChosen(false)
             } else if indexItem.first?.row == 1 {
                 let data = arrPattern[indexPath.row]
                 setImgViewBackground(data.pattern)
                 btnPattern.setBackgroundImage(UIImage(named: data.pattern), forState: .Normal)
-                setSelectedBackground()
+                stSelectPattern.setChosen(true)
+                stSelectBackroundColor.setChosen(false)
+                stSelectBackgroundTemplate.setChosen(false)
             } else if indexItem.first?.row == 2 {
                 let data = arrBackgroundImage[indexPath.row]
                 setImgViewBackground(data.backgroundImage)
                 btnBackgroundTemplate.setBackgroundImage(UIImage(named: data.backgroundImage), forState: .Normal)
-                setSelectedBackground()
+                stSelectBackgroundTemplate.setChosen(true)
+                stSelectBackroundColor.setChosen(false)
+                stSelectPattern.setChosen(false)
             }
         } else if collectionView == colFont {
             indexFont.removeAll()
@@ -213,30 +222,17 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         btnBackgroundTemplate.alpha = 0.5
         btnCamera.setBackgroundImage(UIImage(named: "CP_Camera"), forState: .Normal)
         btnGallery.setBackgroundImage(UIImage(named: "CP_Photo"), forState: .Normal)
+    }
+    
+    func setSelectBackground() {
+        stSelectBackroundColor.frame = btnBackroundColor.frame
+        viewButton.addSubview(stSelectBackroundColor)
         
-        stSelected = SetSelected.init(selectedBg: selectedBackgroundTemplate, btnTemp: btnBackgroundTemplate)
-        viewButton.addSubview(stSelected.selectedBackground)
-    }
-    
-    func checkSTSelected() {
-        if (stSelected.selectedBackground != nil) {
-            stSelected.selectedBackground.removeFromSuperview()
-            stSelected.btnTemporary.alpha = 0.5
-        }
-    }
-    
-    func setSelectedBackground() {
-        if indexItem.first?.row == 0 {
-            checkSTSelected()
-            stSelected = SetSelected.init(selectedBg: selectedBackgroundColor, btnTemp: btnBackroundColor)
-        } else if indexItem.first?.row == 1 {
-            checkSTSelected()
-            stSelected = SetSelected.init(selectedBg: selectedPattern, btnTemp: btnPattern)
-        } else if indexItem.first?.row == 2 {
-            checkSTSelected()
-            stSelected = SetSelected.init(selectedBg: selectedBackgroundTemplate, btnTemp: btnBackgroundTemplate)
-        }
-        viewButton.addSubview(stSelected.selectedBackground)
+        stSelectPattern.frame = btnPattern.frame
+        viewButton.addSubview(stSelectPattern)
+        
+        stSelectBackgroundTemplate.frame = btnBackgroundTemplate.frame
+        viewButton.addSubview(stSelectBackgroundTemplate)
     }
     
     @IBAction func btnPatternClicked(sender: UIButton) {
