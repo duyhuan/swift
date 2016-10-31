@@ -18,7 +18,7 @@ class SelectButton: UIButton {
     }
     
     init() {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         setupView()
     }
     
@@ -29,23 +29,26 @@ class SelectButton: UIButton {
     
     func setupView() {
         selectedBackground.image = UIImage(named: "CP_Deselect")
-        selectedBackground.contentMode = .ScaleAspectFit
+        selectedBackground.contentMode = .scaleAspectFit
         selectedBackground.translatesAutoresizingMaskIntoConstraints = false
-        self.userInteractionEnabled = false
+        selectedBackground.alpha = 0.5
+        self.isUserInteractionEnabled = false
         addSubview(selectedBackground)
         
-        addConstraint(NSLayoutConstraint(item: selectedBackground, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1.0, constant: 0.0))
-        addConstraint(NSLayoutConstraint(item: selectedBackground, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1.0, constant: 0.0))
-        addConstraint(NSLayoutConstraint(item: selectedBackground, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
-        addConstraint(NSLayoutConstraint(item: selectedBackground, attribute: .Leading, relatedBy: .Equal, toItem: self, attribute: .Leading, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: selectedBackground, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: selectedBackground, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: selectedBackground, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: selectedBackground, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1.0, constant: 0.0))
         layoutIfNeeded()
     }
     
-    func setChosen(isSelected: Bool) {
+    func setChosen(_ isSelected: Bool) {
         if isSelected {
             selectedBackground.image = UIImage.init(named: "CP_Selected")
+            selectedBackground.alpha = 1.0
         } else {
             selectedBackground.image = UIImage.init(named: "CP_Deselect")
+            selectedBackground.alpha = 0.5
         }
     }
 }

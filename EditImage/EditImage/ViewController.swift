@@ -15,7 +15,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var arrBackgroundImage: [BackgroundImageModel] = []
     var arrPattern: [PatternModel] = []
     let imagePicker = UIImagePickerController()
-    let arrFont: [String] = UIFont.familyNames()
+    let arrFont: [String] = UIFont.familyNames
     let tapOnImgViewToHiddenColBackGroundGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     let selectedBackgroundColor: UIImageView = UIImageView()
     let selectedPattern: UIImageView = UIImageView()
@@ -25,14 +25,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var stSelectBackroundColor = SelectButton()
     var stSelectPattern = SelectButton()
     var stSelectBackgroundTemplate = SelectButton()
+    var lblTextView = LabelTextView()
+    var arrLblTextView: [UIView] = []
     
-    var indexItem = [NSIndexPath]() {
+    var indexItem = [IndexPath]() {
         didSet {
             colViewBackground.reloadData()
         }
     }
     
-    var indexFont = [NSIndexPath](){
+    var indexFont = [IndexPath](){
         didSet {
             colFont.reloadData()
         }
@@ -59,8 +61,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         colViewBackground.delegate = self
         colViewBackground.dataSource = self
-        colViewBackground.backgroundColor = UIColor.darkGrayColor()
-        colViewBackground.hidden = true
+        colViewBackground.backgroundColor = UIColor.darkGray
+        colViewBackground.isHidden = true
         arrBackgroundColorAppend()
         arrPatternAppend()
         arrBackgroundImageAppend()
@@ -70,35 +72,38 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         imgView.addGestureRecognizer(tapOnImgViewToHiddenColBackGroundGesture)
         tapOnImgViewToHiddenColBackGroundGesture.addTarget(self, action: #selector(ViewController.tapOnImgViewToHiddenColBackGround(_:)))
-        imgView.userInteractionEnabled = true
-        imgView.multipleTouchEnabled = true
+        imgView.isUserInteractionEnabled = true
+        imgView.isMultipleTouchEnabled = true
         
-        setViewButton()
+        setupViewButton()
         setSelectBackground()
+        stSelectBackgroundTemplate.setChosen(true)
         setGradient()
         colorTemplate()
         
         setImgViewBackground("1FA6SEYFHF.jpg")
         
-        slider.setThumbImage(UIImage(named: "CP_Point"), forState: .Normal)
+        setupSlider()
         imgSmallSize.image = UIImage(named: "CP_SizeSmall")
-        imgSmallSize.contentMode = .ScaleAspectFit
+        imgSmallSize.contentMode = .scaleAspectFit
         imgBigSize.image = UIImage(named: "CP_SizeBig")
-        imgBigSize.contentMode = .ScaleAspectFit
+        imgBigSize.contentMode = .scaleAspectFit
+        addTapGestureOnImgView()
+        setupTextColor()
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == colFont {
             return arrFont.count
         } else {
             if indexItem.first == nil {
                 return 0
             }
-            if indexItem.first?.row == 0 {
+            if (indexItem.first as NSIndexPath?)?.row == 0 {
                 return arrBackgroundColor.count
-            } else if indexItem.first?.row == 1 {
+            } else if (indexItem.first as NSIndexPath?)?.row == 1 {
                 return arrPattern.count
-            } else if indexItem.first?.row == 2 {
+            } else if (indexItem.first as NSIndexPath?)?.row == 2 {
                 return arrBackgroundImage.count
             } else {
                 return 0
@@ -106,69 +111,69 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
 
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == colFont {
-            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! FontCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! FontCollectionViewCell
             cell.frame.size.width = colFont.frame.size.width / 3
-            cell.lblFont.text = arrFont[indexPath.row]
+            cell.lblFont.text = arrFont[(indexPath as NSIndexPath).row]
             
             if cell.lblFont.text!.characters.count > 10 {
-                cell.lblFont.text = (cell.lblFont.text! as NSString).substringToIndex(10)
-                cell.lblFont.font = UIFont(name: arrFont[indexPath.row], size: (cell.lblFont.font?.pointSize)!)
+                cell.lblFont.text = (cell.lblFont.text! as NSString).substring(to: 10)
+                cell.lblFont.font = UIFont(name: arrFont[(indexPath as NSIndexPath).row], size: (cell.lblFont.font?.pointSize)!)
             }
             
-            if indexFont.indexOf(indexPath) == nil {
-                cell.lblFont.textColor = UIColor.lightGrayColor()
-            } else if indexFont.first?.row == indexPath.row {
-                cell.lblFont.textColor = UIColor.blackColor()
+            if indexFont.index(of: indexPath) == nil {
+                cell.lblFont.textColor = UIColor.lightGray
+            } else if (indexFont.first as NSIndexPath?)?.row == (indexPath as NSIndexPath).row {
+                cell.lblFont.textColor = UIColor.black
             }
             
             return cell
         } else {
-            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! BackgroundCollectionViewCell
-            if indexItem.first?.row == 0 {
-                let data = arrBackgroundColor[indexPath.row]
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! BackgroundCollectionViewCell
+            if (indexItem.first as NSIndexPath?)?.row == 0 {
+                let data = arrBackgroundColor[(indexPath as NSIndexPath).row]
                 cell.bgColorImage.image = nil
                 cell.bgColorImage.backgroundColor = data.bgroundColor
-                cell.bgColorImage.layer.borderColor = UIColor.whiteColor().CGColor
+                cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
-            } else if indexItem.first!.row == 1 {
-                let data = arrPattern[indexPath.row]
+            } else if (indexItem.first! as NSIndexPath).row == 1 {
+                let data = arrPattern[(indexPath as NSIndexPath).row]
                 cell.bgColorImage.image = nil
                 cell.bgColorImage.image = UIImage(named: data.pattern)
-                cell.bgColorImage.layer.borderColor = UIColor.whiteColor().CGColor
+                cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
-            } else if indexItem.first?.row == 2 {
-                let data = arrBackgroundImage[indexPath.row]
+            } else if (indexItem.first as NSIndexPath?)?.row == 2 {
+                let data = arrBackgroundImage[(indexPath as NSIndexPath).row]
                 cell.bgColorImage.image = nil
                 cell.bgColorImage.image = UIImage(named: data.backgroundImage)
-                cell.bgColorImage.layer.borderColor = UIColor.whiteColor().CGColor
+                cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
             }
             return cell
         }
     }
 
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == colViewBackground {
-            if indexItem.first?.row == 0 {
-                let data = arrBackgroundColor[indexPath.row]
+            if (indexItem.first as NSIndexPath?)?.row == 0 {
+                let data = arrBackgroundColor[(indexPath as NSIndexPath).row]
                 imgView.backgroundColor = data.bgroundColor
                 btnBackroundColor.backgroundColor = data.bgroundColor
                 stSelectBackroundColor.setChosen(true)
                 stSelectPattern.setChosen(false)
                 stSelectBackgroundTemplate.setChosen(false)
-            } else if indexItem.first?.row == 1 {
-                let data = arrPattern[indexPath.row]
+            } else if (indexItem.first as NSIndexPath?)?.row == 1 {
+                let data = arrPattern[(indexPath as NSIndexPath).row]
                 setImgViewBackground(data.pattern)
-                btnPattern.setBackgroundImage(UIImage(named: data.pattern), forState: .Normal)
+                btnPattern.setBackgroundImage(UIImage(named: data.pattern), for: UIControlState())
                 stSelectPattern.setChosen(true)
                 stSelectBackroundColor.setChosen(false)
                 stSelectBackgroundTemplate.setChosen(false)
-            } else if indexItem.first?.row == 2 {
-                let data = arrBackgroundImage[indexPath.row]
+            } else if (indexItem.first as NSIndexPath?)?.row == 2 {
+                let data = arrBackgroundImage[(indexPath as NSIndexPath).row]
                 setImgViewBackground(data.backgroundImage)
-                btnBackgroundTemplate.setBackgroundImage(UIImage(named: data.backgroundImage), forState: .Normal)
+                btnBackgroundTemplate.setBackgroundImage(UIImage(named: data.backgroundImage), for: UIControlState())
                 stSelectBackgroundTemplate.setChosen(true)
                 stSelectBackroundColor.setChosen(false)
                 stSelectPattern.setChosen(false)
@@ -176,55 +181,154 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         } else if collectionView == colFont {
             indexFont.removeAll()
             indexFont.append(indexPath)
+            
+            for i in 0..<arrLblTextView.count {
+                let lbltv = arrLblTextView[i] as! LabelTextView
+                if lbltv.tag == 1 {
+                    lbltv.textLbl.font = UIFont(name: arrFont[indexPath.row], size: lblTextView.textLbl.font.pointSize)
+                }
+            }
         }
     }
     
     // MARK: Actions
-    @IBAction func btnAddTextClicked(sender: UIButton) {
-        let lblText: UILabel = UILabel()
-        lblText.text = "Double tap to quote"
-        lblText.layer.borderColor = UIColor.whiteColor().CGColor
-        lblText.layer.borderWidth = 1
-        lblText.frame.size = CGSize(width: 200, height: 30)
-        lblText.textAlignment = .Center
-        lblText.textColor = UIColor.whiteColor()
-        lblText.center.x = imgView.frame.size.width / 2
-        lblText.center.y = imgView.frame.size.height / 2
-        imgView.addSubview(lblText)
+    @IBAction func btnAddTextClicked(_ sender: UIButton) {
+        lblTextView = LabelTextView()
+        lblTextView.frame.size = CGSize(width: 210, height: 40)
+        lblTextView.frame.origin = CGPoint(x: (imgView.frame.size.width - lblTextView.frame.size.width) / 2, y: (imgView.frame
+            .size.height - lblTextView.frame.size.height) / 2)
+        imgView.addSubview(lblTextView)
+        
+        let panGestureLblTextView: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ViewController.lblTextViewPangesture(_:)))
+        lblTextView.textLbl.isUserInteractionEnabled = true
+        lblTextView.addGestureRecognizer(panGestureLblTextView)
+        imgView.isUserInteractionEnabled = true
+        
+        let tapGestureLblTextView: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.lblTextViewTapgesture(_:)))
+        lblTextView.addGestureRecognizer(tapGestureLblTextView)
+        arrLblTextView.append(lblTextView)
     }
     
-    @IBAction func btnBackroundColorClicked(sender: UIButton) {
-        indexItem.removeAll()
-        indexItem.append(NSIndexPath(forRow: 0, inSection: 0))
-        colViewBackground.hidden = false
+    func lblTextViewPangesture(_ sender: UIPanGestureRecognizer) {
+        let translation = sender.translation(in: self.imgView)
+        sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
+        sender.setTranslation(CGPoint.zero, in: imgView)
     }
     
-    @IBAction func btnShareOnFaceClicked(sender: UIButton) {
-        if imgView.image != nil {
-            UIGraphicsBeginImageContext(imgView.frame.size)
-            imgView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
-            let imageSave = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            UIImageWriteToSavedPhotosAlbum(imageSave, nil, nil, nil)
-            
-            let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
-            composeSheet.addImage(imageSave)
-            presentViewController(composeSheet, animated: true, completion: nil)
+    func lblTextViewTapgesture(_ sender: UITapGestureRecognizer) {
+        let point: CGPoint = sender.location(in: imgView)
+        for i in 0..<arrLblTextView.count {
+            let lbltv = arrLblTextView[i] as! LabelTextView
+            if lbltv.textView.isHidden == false {
+                lbltv.textView.isHidden = true
+                lbltv.textLbl.isHidden = false
+                lbltv.topLeftBtn.isHidden = false
+                lbltv.topRightBtn.isHidden = false
+                lbltv.botRightBtn.isHidden = false
+                lbltv.botLeftBtn.isHidden = false
+            }
+            lbltv.tag = 0
+            if point.x >= lbltv.frame.origin.x && point.x <= lbltv.frame.origin.x + lbltv.frame.size.width && point.y >= lbltv.frame.origin.y && point.y <= lbltv.frame.origin.y + lbltv.frame.size.height {
+                lbltv.tag = 1
+                slider.value = Float(lbltv.textLbl.font.pointSize)
+            }
         }
     }
     
-    func setViewButton() {
-        btnBackroundColor.backgroundColor = UIColor.lightGrayColor()
-        btnPattern.setBackgroundImage(UIImage(named: "smoke4.jpg"), forState: .Normal)
-        btnBackgroundTemplate.setBackgroundImage(UIImage(named: "1FA6SEYFHF.jpg"), forState: .Normal)
-        btnBackroundColor.alpha = 0.5
-        btnPattern.alpha = 0.5
-        btnBackgroundTemplate.alpha = 0.5
-        btnCamera.setBackgroundImage(UIImage(named: "CP_Camera"), forState: .Normal)
-        btnGallery.setBackgroundImage(UIImage(named: "CP_Photo"), forState: .Normal)
+    func addTapGestureOnImgView() {
+        let tapGestureImgView: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.imgViewTapGesture(_:)))
+        imgView.addGestureRecognizer(tapGestureImgView)
+    }
+    
+    func imgViewTapGesture(_ sender: UITapGestureRecognizer) {
+        for i in 0..<arrLblTextView.count {
+            let a = arrLblTextView[i] as! LabelTextView
+            if a.textView.isHidden == false {
+                a.textView.isHidden = true
+                a.textLbl.isHidden = false
+                a.topLeftBtn.isHidden = false
+                a.topRightBtn.isHidden = false
+                a.botRightBtn.isHidden = false
+                a.botLeftBtn.isHidden = false
+            }
+        }
+    }
+    
+    func setupSlider() {
+        slider.minimumValue = 5.0
+        slider.maximumValue = 50.0
+        slider.value = 10.0
+        slider.setThumbImage(UIImage(named: "CP_Point"), for: UIControlState())
+    }
+    
+    @IBAction func changeFontSizeSlider(_ sender: UISlider) {
+        for i in 0..<arrLblTextView.count {
+            let lbltv = arrLblTextView[i] as! LabelTextView
+            if lbltv.tag == 1 {
+                lbltv.textLbl.font = lbltv.textLbl.font.withSize(CGFloat(slider.value))
+            }
+        }
+    }
+    
+    func setupTextColor() {
+        let longGestureColorPicker: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longGestureColorPicker(_:)))
+        longGestureColorPicker.minimumPressDuration = 0
+        colorPicker.addGestureRecognizer(longGestureColorPicker)
+    }
+    
+    func longGestureColorPicker(_ sender: UILongPressGestureRecognizer) {
+        let location = sender.location(in: self.colorPicker)
+        let textColor = colorPicker.getColorAtPoint(location)
+        for i in 0..<arrLblTextView.count {
+            let lbltv = arrLblTextView[i] as! LabelTextView
+            if lbltv.tag == 1 {
+                lbltv.textLbl.textColor = textColor
+            }
+        }
+    }
+    
+    @IBAction func btnBackroundColorClicked(_ sender: UIButton) {
+        indexItem.removeAll()
+        indexItem.append(IndexPath(row: 0, section: 0))
+        colViewBackground.isHidden = false
+    }
+    
+    @IBAction func btnShareOnFaceClicked(_ sender: UIButton) {
+        if imgView.image != nil {
+            
+            let lblLogo: UILabel = UILabel()
+            lblLogo.translatesAutoresizingMaskIntoConstraints = false
+            lblLogo.autoresizesSubviews = false
+            imgView.addSubview(lblLogo)
+            lblLogo.text = "#SonTungAC&M"
+            lblLogo.textColor = UIColor.red
+            imgView.addConstraint(NSLayoutConstraint(item: lblLogo, attribute: .leading, relatedBy: .equal, toItem: imgView, attribute: .leading, multiplier: 1.0, constant: 20.0))
+            imgView.addConstraint(NSLayoutConstraint(item: lblLogo, attribute: .bottom, relatedBy: .equal, toItem: imgView, attribute: .bottom, multiplier: 1.0, constant: -20.0))
+            
+            UIGraphicsBeginImageContext(imgView.frame.size)
+            imgView.layer.render(in: UIGraphicsGetCurrentContext()!)
+            let imageSave = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            UIImageWriteToSavedPhotosAlbum(imageSave!, nil, nil, nil)
+            
+            lblLogo.removeFromSuperview()
+            
+            let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+            composeSheet?.add(imageSave)
+            present(composeSheet!, animated: true, completion: nil)
+        }
+    }
+    
+    func setupViewButton() {
+        btnBackroundColor.backgroundColor = UIColor.lightGray
+        btnPattern.setBackgroundImage(UIImage(named: "smoke4.jpg"), for: UIControlState())
+        btnBackgroundTemplate.setBackgroundImage(UIImage(named: "1FA6SEYFHF.jpg"), for: UIControlState())
+        btnCamera.setBackgroundImage(UIImage(named: "CP_Camera"), for: UIControlState())
+        btnGallery.setBackgroundImage(UIImage(named: "CP_Photo"), for: UIControlState())
     }
     
     func setSelectBackground() {
+        view.layoutIfNeeded()
         stSelectBackroundColor.frame = btnBackroundColor.frame
         viewButton.addSubview(stSelectBackroundColor)
         
@@ -235,60 +339,60 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         viewButton.addSubview(stSelectBackgroundTemplate)
     }
     
-    @IBAction func btnPatternClicked(sender: UIButton) {
+    @IBAction func btnPatternClicked(_ sender: UIButton) {
         indexItem.removeAll()
-        indexItem.append(NSIndexPath(forRow: 1, inSection: 0))
-        colViewBackground.hidden = false
+        indexItem.append(IndexPath(row: 1, section: 0))
+        colViewBackground.isHidden = false
     }
     
-    @IBAction func btnBackgroundTemplateClicked(sender: UIButton) {
+    @IBAction func btnBackgroundTemplateClicked(_ sender: UIButton) {
         indexItem.removeAll()
-        indexItem.append(NSIndexPath(forRow: 2, inSection: 0))
-        colViewBackground.hidden = false
+        indexItem.append(IndexPath(row: 2, section: 0))
+        colViewBackground.isHidden = false
     }
     
-    @IBAction func btnCameraClicked(sender: UIButton) {
-        colViewBackground.hidden = true
+    @IBAction func btnCameraClicked(_ sender: UIButton) {
+        colViewBackground.isHidden = true
     }
     
-    @IBAction func btnGalleryClicked(sender: UIButton) {
-        colViewBackground.hidden = true
+    @IBAction func btnGalleryClicked(_ sender: UIButton) {
+        colViewBackground.isHidden = true
         imagePicker.allowsEditing = false
-        imagePicker.sourceType = .PhotoLibrary
-        presentViewController(imagePicker, animated: true, completion: nil)
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imgView.contentMode = .ScaleAspectFit
+            imgView.contentMode = .scaleAspectFit
             imgView.image = pickedImage
         }
         
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
     
-    func setImgViewBackground(str: String) {
+    func setImgViewBackground(_ str: String) {
         let imgViewBackground = UIImageView()
         imgViewBackground.frame = imgView.frame
-        imgViewBackground.contentMode =  UIViewContentMode.ScaleAspectFill
+        imgViewBackground.contentMode =  UIViewContentMode.scaleAspectFill
         imgViewBackground.clipsToBounds = true
         imgViewBackground.image = UIImage(named: str)
         imgViewBackground.center = view.center
         
         UIGraphicsBeginImageContext(imgViewBackground.frame.size)
-        imgViewBackground.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        imgViewBackground.layer.render(in: UIGraphicsGetCurrentContext()!)
         let imageSave = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        imgView.backgroundColor = UIColor(patternImage: imageSave)
+        imgView.backgroundColor = UIColor(patternImage: imageSave!)
     }
     
-    func tapOnImgViewToHiddenColBackGround(sender: UITapGestureRecognizer) {
-        colViewBackground.hidden = true
+    func tapOnImgViewToHiddenColBackGround(_ sender: UITapGestureRecognizer) {
+        colViewBackground.isHidden = true
     }
     
     func setGradient() {
@@ -298,10 +402,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         imgGradient.autoresizesSubviews = false
         imgGradient.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .Top, relatedBy: .Equal, toItem: slider, attribute: .Bottom, multiplier: 1, constant: 10))
-        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1, constant: 10))
+        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .top, relatedBy: .equal, toItem: slider, attribute: .bottom, multiplier: 1, constant: 10))
+        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imgGradient, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 10))
 //        gradientLayer.frame = gradientLayerView.bounds
 //        let whiteColorTop = UIColor.whiteColor().CGColor as CGColorRef
 //        let blackColorBottom = UIColor.lightGrayColor().CGColor as CGColorRef
@@ -316,28 +420,28 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         colorPicker.autoresizesSubviews = false
         colorPicker.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Top, relatedBy: .Equal, toItem: imgGradient, attribute: .Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Bottom , relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Left, relatedBy: .Equal, toItem: self.view, attribute: .Left, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .Right, relatedBy: .Equal, toItem: self.view, attribute: .Right, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .top, relatedBy: .equal, toItem: imgGradient, attribute: .bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .bottom , relatedBy: .equal, toItem: self.view, attribute: .bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .left, relatedBy: .equal, toItem: self.view, attribute: .left, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: colorPicker, attribute: .right, relatedBy: .equal, toItem: self.view, attribute: .right, multiplier: 1, constant: 0))
     }
     
     // MARK: Array source
     func arrBackgroundColorAppend() {
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.blackColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.darkGrayColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.lightGrayColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.whiteColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.grayColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.redColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.greenColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.blueColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.cyanColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.yellowColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.magentaColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.orangeColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.purpleColor()))
-        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.brownColor()))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.black))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.darkGray))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.lightGray))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.white))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.gray))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.red))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.green))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.blue))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.cyan))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.yellow))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.magenta))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.orange))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.purple))
+        arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.brown))
     }
     
     func arrPatternAppend() {
@@ -362,9 +466,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 }
 
 extension String {
-    func trunc(length: Int, trailing: String? = "") -> String {
+    func trunc(_ length: Int, trailing: String? = "") -> String {
         if self.characters.count > length {
-            return self.substringToIndex(self.startIndex.advancedBy(length))
+            return self.substring(to: self.characters.index(self.startIndex, offsetBy: length))
         } else {
             return self
         }

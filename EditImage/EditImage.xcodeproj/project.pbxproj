@@ -11,6 +11,7 @@
 		336910921DACCB4D00EA9637 /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336910911DACCB4D00EA9637 /* SelectButton.swift */; };
 		3370B4041DA8E57100C267AD /* FontCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3370B4031DA8E57100C267AD /* FontCollectionViewCell.swift */; };
 		337B000F1DAB4535006421C4 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337B000E1DAB4535006421C4 /* ColorPicker.swift */; };
+		33943CCF1DB791B5007F7A16 /* LabelTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33943CCE1DB791B5007F7A16 /* LabelTextView.swift */; };
 		33950A5E1DA60EEF0033F4F2 /* PatternModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33950A5D1DA60EEF0033F4F2 /* PatternModel.swift */; };
 		33950A601DA60F040033F4F2 /* BackgroundColorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33950A5F1DA60F040033F4F2 /* BackgroundColorModel.swift */; };
 		33950A641DA61FE30033F4F2 /* BackgroundCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33950A631DA61FE30033F4F2 /* BackgroundCollectionViewCell.swift */; };
@@ -41,6 +42,7 @@
 		336910911DACCB4D00EA9637 /* SelectButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
 		3370B4031DA8E57100C267AD /* FontCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontCollectionViewCell.swift; sourceTree = "<group>"; };
 		337B000E1DAB4535006421C4 /* ColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		33943CCE1DB791B5007F7A16 /* LabelTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelTextView.swift; sourceTree = "<group>"; };
 		33950A5D1DA60EEF0033F4F2 /* PatternModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatternModel.swift; sourceTree = "<group>"; };
 		33950A5F1DA60F040033F4F2 /* BackgroundColorModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundColorModel.swift; sourceTree = "<group>"; };
 		33950A631DA61FE30033F4F2 /* BackgroundCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				3370B4031DA8E57100C267AD /* FontCollectionViewCell.swift */,
 				337B000E1DAB4535006421C4 /* ColorPicker.swift */,
 				336910911DACCB4D00EA9637 /* SelectButton.swift */,
+				33943CCE1DB791B5007F7A16 /* LabelTextView.swift */,
 			);
 			path = EditImage;
 			sourceTree = "<group>";
@@ -181,11 +184,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Duy Huan";
 				TargetAttributes = {
 					339EAEC31DA4B12B00A7B0AC = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -247,6 +251,7 @@
 				33950A5E1DA60EEF0033F4F2 /* PatternModel.swift in Sources */,
 				336910921DACCB4D00EA9637 /* SelectButton.swift in Sources */,
 				337B000F1DAB4535006421C4 /* ColorPicker.swift in Sources */,
+				33943CCF1DB791B5007F7A16 /* LabelTextView.swift in Sources */,
 				339EAF401DA4BD4400A7B0AC /* BackgroundImageModel.swift in Sources */,
 				3370B4041DA8E57100C267AD /* FontCollectionViewCell.swift in Sources */,
 			);
@@ -288,8 +293,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -311,7 +318,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -334,8 +341,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -351,9 +360,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -367,6 +377,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.DuyHuan.EditImage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -378,6 +389,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.DuyHuan.EditImage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
