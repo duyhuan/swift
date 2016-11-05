@@ -204,15 +204,26 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         lblTextView.addGestureRecognizer(panGestureLblTextView)
         imgView.isUserInteractionEnabled = true
         
+//        let tapGestureLblTextView: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.lblTextViewTapgesture(_:)))
         let tapGestureLblTextView: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.lblTextViewTapgesture(_:)))
         lblTextView.addGestureRecognizer(tapGestureLblTextView)
         arrLblTextView.append(lblTextView)
     }
     
     func lblTextViewPangesture(_ sender: UIPanGestureRecognizer) {
-        let translation = sender.translation(in: self.imgView)
-        sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
-        sender.setTranslation(CGPoint.zero, in: imgView)
+        if lblTextView.frame.origin.x >= 0 && lblTextView.frame.origin.y >= 0 && lblTextView.frame.origin.x + lblTextView.frame.size.width <= imgView.frame.size.width && lblTextView.frame.origin.y + lblTextView.frame.size.height <= imgView.frame.size.height {
+            let translation = sender.translation(in: self.imgView)
+            sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
+            sender.setTranslation(CGPoint.zero, in: imgView)
+        } else if lblTextView.frame.origin.x < 0 {
+            lblTextView.frame.origin.x = 0
+        } else if lblTextView.frame.origin.y < 0 {
+            lblTextView.frame.origin.y = 0
+        } else if lblTextView.frame.origin.x + lblTextView.frame.size.width > imgView.frame.size.width {
+            lblTextView.frame.origin.x = imgView.frame.size.width - lblTextView.frame.size.width
+        } else if lblTextView.frame.origin.y + lblTextView.frame.size.height > imgView.frame.size.height {
+            lblTextView.frame.origin.y = imgView.frame.size.height - lblTextView.frame.size.height
+        }
     }
     
     func lblTextViewTapgesture(_ sender: UITapGestureRecognizer) {
@@ -226,9 +237,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 lbltv.topRightBtn.isHidden = false
                 lbltv.botRightBtn.isHidden = false
                 lbltv.botLeftBtn.isHidden = false
+                lbltv.textLbl.text = lbltv.textView.text
             }
             lbltv.tag = 0
-            if point.x >= lbltv.frame.origin.x && point.x <= lbltv.frame.origin.x + lbltv.frame.size.width && point.y >= lbltv.frame.origin.y && point.y <= lbltv.frame.origin.y + lbltv.frame.size.height {
+            if lbltv.frame.contains(point) {
                 lbltv.tag = 1
                 slider.value = Float(lbltv.textLbl.font.pointSize)
             }
@@ -242,14 +254,15 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func imgViewTapGesture(_ sender: UITapGestureRecognizer) {
         for i in 0..<arrLblTextView.count {
-            let a = arrLblTextView[i] as! LabelTextView
-            if a.textView.isHidden == false {
-                a.textView.isHidden = true
-                a.textLbl.isHidden = false
-                a.topLeftBtn.isHidden = false
-                a.topRightBtn.isHidden = false
-                a.botRightBtn.isHidden = false
-                a.botLeftBtn.isHidden = false
+            let lbltv = arrLblTextView[i] as! LabelTextView
+            if lbltv.textView.isHidden == false {
+                lbltv.textView.isHidden = true
+                lbltv.textLbl.isHidden = false
+                lbltv.topLeftBtn.isHidden = false
+                lbltv.topRightBtn.isHidden = false
+                lbltv.botRightBtn.isHidden = false
+                lbltv.botLeftBtn.isHidden = false
+                lbltv.textLbl.text = lbltv.textView.text
             }
         }
     }

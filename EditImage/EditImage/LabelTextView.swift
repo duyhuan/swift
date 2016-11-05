@@ -11,10 +11,10 @@ import UIKit
 class LabelTextView: UIView, UITextViewDelegate{
     
     var textLbl: UILabel = UILabel()
-    let topLeftBtn: UIButton = UIButton()
-    let topRightBtn: UIButton = UIButton()
-    let botRightBtn: UIButton = UIButton()
-    let botLeftBtn: UIButton = UIButton()
+    var topLeftBtn: UIButton = UIButton()
+    var topRightBtn: UIButton = UIButton()
+    var botRightBtn: UIButton = UIButton()
+    var botLeftBtn: UIButton = UIButton()
     let textView: UITextView = UITextView()
     
     override init(frame: CGRect) {
@@ -131,11 +131,20 @@ class LabelTextView: UIView, UITextViewDelegate{
         let translation = sender.translation(in: self)
         sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
         sender.setTranslation(CGPoint.zero, in: self)
-
-        self.frame.origin = CGPoint(x: self.frame.origin.x + translation.x, y: self.frame.origin.y + translation.y)
-        self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
+        
+        if topLeftBtn.frame.origin.x < topRightBtn.frame.origin.x && topLeftBtn.frame.origin.y < botLeftBtn.frame.origin.y {
+            self.frame.origin = CGPoint(x: self.frame.origin.x + translation.x, y: self.frame.origin.y + translation.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
+        } else if topLeftBtn.frame.origin.x >= topRightBtn.frame.origin.x {
+            self.frame.origin = CGPoint(x: self.frame.origin.x - translation.x, y: self.frame.origin.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
+        } else if topLeftBtn.frame.origin.y >= botLeftBtn.frame.origin.y {
+            self.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y - translation.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
+        }
         textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
         textView.frame = textLbl.frame
+        
         setFontLabel()
     }
     
@@ -144,8 +153,16 @@ class LabelTextView: UIView, UITextViewDelegate{
         sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
         sender.setTranslation(CGPoint.zero, in: self)
         
-        self.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y + translation.y)
-        self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
+        if topRightBtn.frame.origin.x > topLeftBtn.frame.origin.x && topRightBtn.frame.origin.y < botRightBtn.frame.origin.y {
+            self.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y + translation.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
+        } else if topRightBtn.frame.origin.x <= topLeftBtn.frame.origin.x {
+            self.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y - translation.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
+        } else if topRightBtn.frame.origin.y >= botRightBtn.frame.origin.y {
+            self.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y - translation.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
+        }
         textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
         textView.frame = textLbl.frame
         
@@ -157,9 +174,18 @@ class LabelTextView: UIView, UITextViewDelegate{
         sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
         sender.setTranslation(CGPoint.zero, in: self)
         
-        self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
+        if botRightBtn.frame.origin.x > botLeftBtn.frame.origin.x && botRightBtn.frame.origin.y > topRightBtn.frame.origin.y {
+            self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
+        } else if botRightBtn.frame.origin.x <= botLeftBtn.frame.origin.x {
+            self.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y + translation.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
+        } else if botRightBtn.frame.origin.y <= topRightBtn.frame.origin.y {
+            self.frame.origin = CGPoint(x: self.frame.origin.x + translation.x, y: self.frame.origin.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
+        }
         textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
         textView.frame = textLbl.frame
+        
         setFontLabel()
     }
     
@@ -168,15 +194,32 @@ class LabelTextView: UIView, UITextViewDelegate{
         sender.view?.center = CGPoint(x: translation.x + (sender.view?.center.x)!, y: translation.y + (sender.view?.center.y)!)
         sender.setTranslation(CGPoint.zero, in: self)
         
-        self.frame.origin = CGPoint(x: self.frame.origin.x + translation.x, y: self.frame.origin.y)
-        self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
+        if botLeftBtn.frame.origin.x < botRightBtn.frame.origin.x && botLeftBtn.frame.origin.y > topLeftBtn.frame.origin.y {
+            self.frame.origin = CGPoint(x: self.frame.origin.x + translation.x, y: self.frame.origin.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
+            
+        } else if botLeftBtn.frame.origin.x >= botRightBtn.frame.origin.x {
+            self.frame.origin = CGPoint(x: self.frame.origin.x - translation.x, y: self.frame.origin.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
+        } else if botLeftBtn.frame.origin.y <= topLeftBtn.frame.origin.y {
+            self.frame.origin = CGPoint(x: self.frame.origin.x + translation.x, y: self.frame.origin.y)
+            self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
+        }
         textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
         textView.frame = textLbl.frame
         
         setFontLabel()
+        
+        if sender.state == .began || sender.state == .changed {
+            
+            print("OK")
+        }
     }
     
     func setFontLabel() {
+        if textLbl.frame.size.width == 0 {
+            textLbl.frame.size.width = 1
+        }
         var a = Int(textLbl.intrinsicContentSize.width / textLbl.frame.size.width)
         a += 1
         
