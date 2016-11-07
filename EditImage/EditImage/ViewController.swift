@@ -139,14 +139,24 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 cell.bgColorImage.layer.borderWidth = 1
             } else if (indexItem.first! as NSIndexPath).row == 1 {
                 let data = arrPattern[(indexPath as NSIndexPath).row]
+                let myPicture = UIImage(named: data.pattern)
+                //let myThumb1 = myPicture?.resizeWith(percentage: 0.1)
+                let myThumb2 = myPicture?.resizeWith(width: 50.0)
                 cell.bgColorImage.image = nil
-                cell.bgColorImage.image = UIImage(named: data.pattern)
+                cell.bgColorImage.image = myThumb2
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
+//                let imgData: NSData = NSData(data: UIImageJPEGRepresentation((cell.bgColorImage.image)!, 1)!)
+//                // var imgData: NSData = UIImagePNGRepresentation(image)
+//                // you can also replace UIImageJPEGRepresentation with UIImagePNGRepresentation.
+//                let imageSize: Int = imgData.length
+//                print("size of image in KB: %f ", imageSize / 1024)
             } else if (indexItem.first as NSIndexPath?)?.row == 2 {
                 let data = arrBackgroundImage[(indexPath as NSIndexPath).row]
+                let myPicture = UIImage(named: data.backgroundImage)
+                let myThumb2 = myPicture?.resizeWith(width: 50.0)
                 cell.bgColorImage.image = nil
-                cell.bgColorImage.image = UIImage(named: data.backgroundImage)
+                cell.bgColorImage.image = myThumb2
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
             }
@@ -485,5 +495,30 @@ extension String {
         } else {
             return self
         }
+    }
+}
+
+extension UIImage {
+    func resizeWith(percentage: CGFloat) -> UIImage? {
+        let imageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: size.width * percentage, height: size.height * percentage)))
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = self
+        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, scale)
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        imageView.layer.render(in: context)
+        guard let result = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
+        UIGraphicsEndImageContext()
+        return result
+    }
+    func resizeWith(width: CGFloat) -> UIImage? {
+        let imageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: width, height: CGFloat(ceil(width/size.width * size.height)))))
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = self
+        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, scale)
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        imageView.layer.render(in: context)
+        guard let result = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
+        UIGraphicsEndImageContext()
+        return result
     }
 }

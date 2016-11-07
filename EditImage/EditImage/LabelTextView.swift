@@ -209,26 +209,23 @@ class LabelTextView: UIView, UITextViewDelegate{
         textView.frame = textLbl.frame
         
         setFontLabel()
-        
-        if sender.state == .began || sender.state == .changed {
-            
-            print("OK")
-        }
     }
     
     func setFontLabel() {
-        if textLbl.frame.size.width == 0 {
-            textLbl.frame.size.width = 1
+        let width = frame.size.width - textLbl.font.pointSize
+        let height = frame.size.height - textLbl.font.pointSize
+        var fontSize: CGFloat = 200
+        let minFontSize: CGFloat = 5
+        let constrainSize = CGSize(width: width, height: CGFloat(MAXFLOAT))
+        while fontSize > minFontSize {
+            textLbl.font = UIFont.init(name: (textLbl.font?.fontName)!, size: fontSize)
+            let rect = (textLbl.text! as NSString).boundingRect(with: constrainSize, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: textLbl.font!], context: nil)
+            if rect.size.height < height{
+                break
+            }
+            fontSize -= 1
         }
-        var a = Int(textLbl.intrinsicContentSize.width / textLbl.frame.size.width)
-        a += 1
-        
-        while textLbl.frame.size.height > textLbl.intrinsicContentSize.height * CGFloat(a) {
-            textLbl.font = textLbl.font.withSize(textLbl.font.pointSize + 1)
-        }
-        while textLbl.frame.size.height <= textLbl.intrinsicContentSize.height * CGFloat(a) {
-            textLbl.font = textLbl.font.withSize(textLbl.font.pointSize - 1)
-        }
+        textLbl.center = CGPoint(x: frame.width/2, y: frame.height/2)
     }
     
     func textLblTapGesture(_ sender: UITapGestureRecognizer) {
