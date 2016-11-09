@@ -28,6 +28,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var lblTextView = LabelTextView()
     var arrLblTextView: [UIView] = []
     
+    var arrPatternBundle: [String] = []
+    var arrBackgroundTemplateBundle: [String] = []
+    
     var indexItem = [IndexPath]() {
         didSet {
             colViewBackground.reloadData()
@@ -90,7 +93,54 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         imgBigSize.contentMode = .scaleAspectFit
         addTapGestureOnImgView()
         setupTextColor()
+        
+        getPatternFromBundle()
+        getBackgroundTemplateFromBundle()
     }
+    
+    func getPatternFromBundle() {
+        let path = Bundle.main.bundlePath.appendingFormat("/Pattern.bundle/thumbs")
+        if let enumerator = FileManager.default.enumerator(atPath: path){
+            while let element = enumerator.nextObject() as? String {
+                self.arrPatternBundle.append(element)
+            }
+        }
+    }
+    
+    func getBackgroundTemplateFromBundle() {
+        let path = Bundle.main.bundlePath.appendingFormat("/BackgroundTemplate.bundle/thumbs")
+        if let enumerator = FileManager.default.enumerator(atPath: path){
+            while let element = enumerator.nextObject() as? String {
+                self.arrBackgroundTemplateBundle.append(element)
+            }
+        }
+    }
+    
+//    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+//        let size = image.size
+//        
+//        let widthRatio  = targetSize.width  / image.size.width
+//        let heightRatio = targetSize.height / image.size.height
+//        
+//        // Figure out what our orientation is, and use that to form the rectangle
+//        var newSize: CGSize
+//        if(widthRatio > heightRatio) {
+//            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+//        } else {
+//            newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
+//        }
+//        
+//        // This is the rect that we've calculated out and this is what is actually used below
+//        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+//        
+//        // Actually do the resizing to the rect using the ImageContext stuff
+//        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+//        image.draw(in: rect)
+//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//        
+//        return newImage!
+//    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == colFont {
@@ -138,27 +188,34 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
             } else if (indexItem.first! as NSIndexPath).row == 1 {
-                let data = arrPattern[(indexPath as NSIndexPath).row]
-                let myPicture = UIImage(named: data.pattern)
+                //let data = arrPattern[(indexPath as NSIndexPath).row]
+                //let data = arr[(indexPath as NSIndexPath).row]
+                //let myPicture = UIImage(named: data.pattern)
                 //let myThumb1 = myPicture?.resizeWith(percentage: 0.1)
-                let myThumb2 = myPicture?.resizeWith(width: 50.0)
+                //let myThumb2 = myPicture?.resizeWith(width: 50.0)
                 cell.bgColorImage.image = nil
-                cell.bgColorImage.image = myThumb2
+                //cell.bgColorImage.image = myThumb2
+                cell.bgColorImage.image = UIImage(named: arrPatternBundle[indexPath.row])
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
-//                let imgData: NSData = NSData(data: UIImageJPEGRepresentation((cell.bgColorImage.image)!, 1)!)
+                //let imgData: NSData = NSData(data: UIImageJPEGRepresentation(UIImage(named: arrPatternBundle[indexPath.row])!, 1)!)
 //                // var imgData: NSData = UIImagePNGRepresentation(image)
 //                // you can also replace UIImageJPEGRepresentation with UIImagePNGRepresentation.
-//                let imageSize: Int = imgData.length
-//                print("size of image in KB: %f ", imageSize / 1024)
+                //let imageSize: Int = imgData.length
+                //print("size of image in KB: %f ", imageSize / 1024)
             } else if (indexItem.first as NSIndexPath?)?.row == 2 {
-                let data = arrBackgroundImage[(indexPath as NSIndexPath).row]
-                let myPicture = UIImage(named: data.backgroundImage)
-                let myThumb2 = myPicture?.resizeWith(width: 50.0)
+//                let data = arrBackgroundImage[(indexPath as NSIndexPath).row]
+//                let myPicture = UIImage(named: data.backgroundImage)
+//                let myThumb2 = myPicture?.resizeWith(width: 50.0)
                 cell.bgColorImage.image = nil
-                cell.bgColorImage.image = myThumb2
+                cell.bgColorImage.image = UIImage(named: arrBackgroundTemplateBundle[indexPath.row])
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
+                //let imgData: NSData = NSData(data: UIImageJPEGRepresentation(UIImage(named: arrBackgroundTemplateBundle[indexPath.row])!, 1)!)
+                //                // var imgData: NSData = UIImagePNGRepresentation(image)
+                //                // you can also replace UIImageJPEGRepresentation with UIImagePNGRepresentation.
+                //let imageSize: Int = imgData.length
+                //print("size of image in KB: %f ", imageSize / 1024)
             }
             return cell
         }
