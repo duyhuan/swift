@@ -244,6 +244,8 @@ class LabelTextView: UIView, UITextViewDelegate{
         textView.isHidden = true
         if textView.text != "" {
             textLbl.text = textView.text
+        } else {
+            textLbl.text = "Double tap to quote"
         }
         topLeftBtn.isHidden = false
         topRightBtn.isHidden = false

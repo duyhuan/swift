@@ -12,8 +12,6 @@ import Social
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var arrBackgroundColor: [BackgroundColorModel] = []
-    var arrBackgroundImage: [BackgroundImageModel] = []
-    var arrPattern: [PatternModel] = []
     let imagePicker = UIImagePickerController()
     let arrFont: [String] = UIFont.familyNames
     let tapOnImgViewToHiddenColBackGroundGesture: UITapGestureRecognizer = UITapGestureRecognizer()
@@ -28,8 +26,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var lblTextView = LabelTextView()
     var arrLblTextView: [UIView] = []
     
-    var arrPatternBundle: [String] = []
-    var arrBackgroundTemplateBundle: [String] = []
+    var arrImagePatternBundleImages: [UIImage] = []
+    var arrImageBackgroundTemplateBundleImages: [UIImage] = []
+    var arrImagePatternBundleThumb: [UIImage] = []
+    var arrImageBackgroundTemplateBundleThumb: [UIImage] = []
     
     var indexItem = [IndexPath]() {
         didSet {
@@ -60,6 +60,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        getPatternFromBundleThumbs()
+        getBackgroundTemplateFromBundleThumbs()
+        getPatternFromBundleImages()
+        getBackgroundTemplateFromBundleImages()
+        
         imagePicker.delegate = self
         
         colViewBackground.delegate = self
@@ -67,8 +72,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         colViewBackground.backgroundColor = UIColor.darkGray
         colViewBackground.isHidden = true
         arrBackgroundColorAppend()
-        arrPatternAppend()
-        arrBackgroundImageAppend()
         
         colFont.delegate = self
         colFont.dataSource = self
@@ -84,8 +87,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         setGradient()
         colorTemplate()
         
-        setImgViewBackground("1FA6SEYFHF.jpg")
-        
         setupSlider()
         imgSmallSize.image = UIImage(named: "CP_SizeSmall")
         imgSmallSize.contentMode = .scaleAspectFit
@@ -93,54 +94,60 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         imgBigSize.contentMode = .scaleAspectFit
         addTapGestureOnImgView()
         setupTextColor()
-        
-        getPatternFromBundle()
-        getBackgroundTemplateFromBundle()
+        setImgViewBackground(arrImageBackgroundTemplateBundleImages[1])
     }
     
-    func getPatternFromBundle() {
+    func getPatternFromBundleImages() {
+        let path = Bundle.main.bundlePath.appendingFormat("/Pattern.bundle/images")
+        self.arrImagePatternBundleImages = []
+        if let enumerator = FileManager.default.enumerator(atPath: path){
+            while let element = enumerator.nextObject() as? String {
+                //self.arrPatternBundle.append(element)
+                if let image = UIImage.init(named: element, in: Bundle(path: path), compatibleWith: nil){
+                    self.arrImagePatternBundleImages.append(image)
+                }
+            }
+        }
+    }
+    
+    func getBackgroundTemplateFromBundleImages() {
+        let path = Bundle.main.bundlePath.appendingFormat("/BackgroundTemplate.bundle/images")
+        self.arrImageBackgroundTemplateBundleImages = []
+        if let enumerator = FileManager.default.enumerator(atPath: path){
+            while let element = enumerator.nextObject() as? String {
+                //self.arrBackgroundTemplateBundle.append(element)
+                if let image = UIImage.init(named: element, in: Bundle(path: path), compatibleWith: nil){
+                    self.arrImageBackgroundTemplateBundleImages.append(image)
+                }
+            }
+        }
+    }
+    
+    func getPatternFromBundleThumbs() {
         let path = Bundle.main.bundlePath.appendingFormat("/Pattern.bundle/thumbs")
+        self.arrImagePatternBundleThumb = []
         if let enumerator = FileManager.default.enumerator(atPath: path){
             while let element = enumerator.nextObject() as? String {
-                self.arrPatternBundle.append(element)
+                //self.arrPatternBundle.append(element)
+                if let image = UIImage.init(named: element, in: Bundle(path: path), compatibleWith: nil){
+                    self.arrImagePatternBundleThumb.append(image)
+                }
             }
         }
     }
     
-    func getBackgroundTemplateFromBundle() {
+    func getBackgroundTemplateFromBundleThumbs() {
         let path = Bundle.main.bundlePath.appendingFormat("/BackgroundTemplate.bundle/thumbs")
+        self.arrImageBackgroundTemplateBundleThumb = []
         if let enumerator = FileManager.default.enumerator(atPath: path){
             while let element = enumerator.nextObject() as? String {
-                self.arrBackgroundTemplateBundle.append(element)
+                //self.arrBackgroundTemplateBundle.append(element)
+                if let image = UIImage.init(named: element, in: Bundle(path: path), compatibleWith: nil){
+                    self.arrImageBackgroundTemplateBundleThumb.append(image)
+                }
             }
         }
     }
-    
-//    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
-//        let size = image.size
-//        
-//        let widthRatio  = targetSize.width  / image.size.width
-//        let heightRatio = targetSize.height / image.size.height
-//        
-//        // Figure out what our orientation is, and use that to form the rectangle
-//        var newSize: CGSize
-//        if(widthRatio > heightRatio) {
-//            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
-//        } else {
-//            newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
-//        }
-//        
-//        // This is the rect that we've calculated out and this is what is actually used below
-//        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
-//        
-//        // Actually do the resizing to the rect using the ImageContext stuff
-//        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-//        image.draw(in: rect)
-//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//        
-//        return newImage!
-//    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == colFont {
@@ -152,9 +159,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             if (indexItem.first as NSIndexPath?)?.row == 0 {
                 return arrBackgroundColor.count
             } else if (indexItem.first as NSIndexPath?)?.row == 1 {
-                return arrPattern.count
+                return arrImagePatternBundleImages.count
             } else if (indexItem.first as NSIndexPath?)?.row == 2 {
-                return arrBackgroundImage.count
+                return arrImageBackgroundTemplateBundleImages.count
             } else {
                 return 0
             }
@@ -188,34 +195,23 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
             } else if (indexItem.first! as NSIndexPath).row == 1 {
-                //let data = arrPattern[(indexPath as NSIndexPath).row]
-                //let data = arr[(indexPath as NSIndexPath).row]
-                //let myPicture = UIImage(named: data.pattern)
-                //let myThumb1 = myPicture?.resizeWith(percentage: 0.1)
-                //let myThumb2 = myPicture?.resizeWith(width: 50.0)
                 cell.bgColorImage.image = nil
-                //cell.bgColorImage.image = myThumb2
-                cell.bgColorImage.image = UIImage(named: arrPatternBundle[indexPath.row])
+                cell.bgColorImage.backgroundColor = nil
+                cell.bgColorImage.image = arrImagePatternBundleThumb[indexPath.row]
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
-                //let imgData: NSData = NSData(data: UIImageJPEGRepresentation(UIImage(named: arrPatternBundle[indexPath.row])!, 1)!)
-//                // var imgData: NSData = UIImagePNGRepresentation(image)
-//                // you can also replace UIImageJPEGRepresentation with UIImagePNGRepresentation.
-                //let imageSize: Int = imgData.length
-                //print("size of image in KB: %f ", imageSize / 1024)
+//                let imgData: NSData = NSData(data: UIImageJPEGRepresentation(cell.bgColorImage.image!, 1)!)
+//                let imageSize: Int = imgData.length
+//                print("size of image in KB: %f ", imageSize / 1024)
             } else if (indexItem.first as NSIndexPath?)?.row == 2 {
-//                let data = arrBackgroundImage[(indexPath as NSIndexPath).row]
-//                let myPicture = UIImage(named: data.backgroundImage)
-//                let myThumb2 = myPicture?.resizeWith(width: 50.0)
                 cell.bgColorImage.image = nil
-                cell.bgColorImage.image = UIImage(named: arrBackgroundTemplateBundle[indexPath.row])
+                cell.bgColorImage.backgroundColor = nil
+                cell.bgColorImage.image = arrImageBackgroundTemplateBundleThumb[indexPath.row]
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
-                //let imgData: NSData = NSData(data: UIImageJPEGRepresentation(UIImage(named: arrBackgroundTemplateBundle[indexPath.row])!, 1)!)
-                //                // var imgData: NSData = UIImagePNGRepresentation(image)
-                //                // you can also replace UIImageJPEGRepresentation with UIImagePNGRepresentation.
-                //let imageSize: Int = imgData.length
-                //print("size of image in KB: %f ", imageSize / 1024)
+//                let imgData: NSData = NSData(data: UIImageJPEGRepresentation(cell.bgColorImage.image)!, 1)!)
+//                let imageSize: Int = imgData.length
+//                print("size of image in KB: %f ", imageSize / 1024)
             }
             return cell
         }
@@ -231,16 +227,14 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 stSelectPattern.setChosen(false)
                 stSelectBackgroundTemplate.setChosen(false)
             } else if (indexItem.first as NSIndexPath?)?.row == 1 {
-                let data = arrPattern[(indexPath as NSIndexPath).row]
-                setImgViewBackground(data.pattern)
-                btnPattern.setBackgroundImage(UIImage(named: data.pattern), for: UIControlState())
+                setImgViewBackground(arrImagePatternBundleImages[(indexPath as NSIndexPath).row])
+                btnPattern.setBackgroundImage(arrImagePatternBundleImages[indexPath.row], for: UIControlState())
                 stSelectPattern.setChosen(true)
                 stSelectBackroundColor.setChosen(false)
                 stSelectBackgroundTemplate.setChosen(false)
             } else if (indexItem.first as NSIndexPath?)?.row == 2 {
-                let data = arrBackgroundImage[(indexPath as NSIndexPath).row]
-                setImgViewBackground(data.backgroundImage)
-                btnBackgroundTemplate.setBackgroundImage(UIImage(named: data.backgroundImage), for: UIControlState())
+                setImgViewBackground(arrImageBackgroundTemplateBundleImages[(indexPath as NSIndexPath).row])
+                btnBackgroundTemplate.setBackgroundImage(arrImageBackgroundTemplateBundleImages[indexPath.row], for: UIControlState())
                 stSelectBackgroundTemplate.setChosen(true)
                 stSelectBackroundColor.setChosen(false)
                 stSelectPattern.setChosen(false)
@@ -271,7 +265,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         lblTextView.addGestureRecognizer(panGestureLblTextView)
         imgView.isUserInteractionEnabled = true
         
-//        let tapGestureLblTextView: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.lblTextViewTapgesture(_:)))
         let tapGestureLblTextView: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.lblTextViewTapgesture(_:)))
         lblTextView.addGestureRecognizer(tapGestureLblTextView)
         arrLblTextView.append(lblTextView)
@@ -304,7 +297,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 lbltv.topRightBtn.isHidden = false
                 lbltv.botRightBtn.isHidden = false
                 lbltv.botLeftBtn.isHidden = false
-                lbltv.textLbl.text = lbltv.textView.text
+                if lbltv.textView.text != "" {
+                    lbltv.textLbl.text = lbltv.textView.text
+                } else {
+                    lbltv.textLbl.text = "Double tap to quote"
+                }
             }
             lbltv.tag = 0
             if lbltv.frame.contains(point) {
@@ -329,7 +326,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 lbltv.topRightBtn.isHidden = false
                 lbltv.botRightBtn.isHidden = false
                 lbltv.botLeftBtn.isHidden = false
-                lbltv.textLbl.text = lbltv.textView.text
+                if lbltv.textView.text != "" {
+                    lbltv.textLbl.text = lbltv.textView.text
+                } else {
+                    lbltv.textLbl.text = "Double tap to quote"
+                }
             }
         }
     }
@@ -385,6 +386,18 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             imgView.addConstraint(NSLayoutConstraint(item: lblLogo, attribute: .leading, relatedBy: .equal, toItem: imgView, attribute: .leading, multiplier: 1.0, constant: 20.0))
             imgView.addConstraint(NSLayoutConstraint(item: lblLogo, attribute: .bottom, relatedBy: .equal, toItem: imgView, attribute: .bottom, multiplier: 1.0, constant: -20.0))
             
+            for i in 0..<arrLblTextView.count {
+                let lbltv = arrLblTextView[i] as! LabelTextView
+                lbltv.topLeftBtn.isHidden = true
+                lbltv.topRightBtn.isHidden = true
+                lbltv.botRightBtn.isHidden = true
+                lbltv.botLeftBtn.isHidden = true
+                lbltv.textLbl.layer.borderWidth = 0
+                if lbltv.textLbl.text == "Double tap to quote" {
+                    lbltv.isHidden = true
+                }
+            }
+            
             UIGraphicsBeginImageContext(imgView.frame.size)
             imgView.layer.render(in: UIGraphicsGetCurrentContext()!)
             let imageSave = UIGraphicsGetImageFromCurrentImageContext()
@@ -392,6 +405,15 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             UIImageWriteToSavedPhotosAlbum(imageSave!, nil, nil, nil)
             
             lblLogo.removeFromSuperview()
+            for i in 0..<arrLblTextView.count {
+                let lbltv = arrLblTextView[i] as! LabelTextView
+                lbltv.topLeftBtn.isHidden = false
+                lbltv.topRightBtn.isHidden = false
+                lbltv.botRightBtn.isHidden = false
+                lbltv.botLeftBtn.isHidden = false
+                lbltv.textLbl.layer.borderWidth = 1
+                lbltv.isHidden = false
+            }
             
             let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
             composeSheet?.add(imageSave)
@@ -401,8 +423,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func setupViewButton() {
         btnBackroundColor.backgroundColor = UIColor.lightGray
-        btnPattern.setBackgroundImage(UIImage(named: "smoke4.jpg"), for: UIControlState())
-        btnBackgroundTemplate.setBackgroundImage(UIImage(named: "1FA6SEYFHF.jpg"), for: UIControlState())
+        btnPattern.setBackgroundImage(arrImagePatternBundleThumb[4], for: UIControlState())
+        btnBackgroundTemplate.setBackgroundImage(arrImageBackgroundTemplateBundleImages[1], for: UIControlState())
         btnCamera.setBackgroundImage(UIImage(named: "CP_Camera"), for: UIControlState())
         btnGallery.setBackgroundImage(UIImage(named: "CP_Photo"), for: UIControlState())
     }
@@ -455,12 +477,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         dismiss(animated: true, completion: nil)
     }
     
-    func setImgViewBackground(_ str: String) {
+    func setImgViewBackground(_ img: UIImage) {
         let imgViewBackground = UIImageView()
         imgViewBackground.frame = imgView.frame
         imgViewBackground.contentMode =  UIViewContentMode.scaleAspectFill
         imgViewBackground.clipsToBounds = true
-        imgViewBackground.image = UIImage(named: str)
+        imgViewBackground.image = img
         imgViewBackground.center = view.center
         
         UIGraphicsBeginImageContext(imgViewBackground.frame.size)
@@ -522,26 +544,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.orange))
         arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.purple))
         arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.brown))
-    }
-    
-    func arrPatternAppend() {
-        arrPattern.append(PatternModel.init(pat: "2.jpg"))
-        arrPattern.append(PatternModel.init(pat: "galaxy-bg-3.jpg"))
-        arrPattern.append(PatternModel.init(pat: "galaxy-bg-8.jpg"))
-        arrPattern.append(PatternModel.init(pat: "grunge2_4.jpg"))
-        arrPattern.append(PatternModel.init(pat: "smoke4.jpg"))
-        arrPattern.append(PatternModel.init(pat: "vintage_clouds_3.jpg"))
-        arrPattern.append(PatternModel.init(pat: "vintage_clouds_7.jpg"))
-        arrPattern.append(PatternModel.init(pat: "wg_blurred_worn_bg8.jpg"))
-        arrPattern.append(PatternModel.init(pat: "wg_gemstone_10.jpg"))
-    }
-    
-    func arrBackgroundImageAppend() {
-        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "0CUCBJX4FZ.jpg"))
-        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "1FA6SEYFHF.jpg"))
-        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "2A1RBTLS50.jpg"))
-        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "GEJ6ML9NHQ.jpg"))
-        arrBackgroundImage.append(BackgroundImageModel.init(bgImg: "ZOL7UI7UE6.jpg"))
     }
 }
 
