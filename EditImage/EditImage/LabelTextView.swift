@@ -35,7 +35,7 @@ class LabelTextView: UIView, UITextViewDelegate{
     func setupView() {
         textLbl.text = "Double tap to quote"
         textLbl.layer.borderColor = UIColor.white.cgColor
-        textLbl.layer.borderWidth = 1
+        textLbl.layer.borderWidth = 0
         textLbl.textAlignment = .center
         textLbl.textColor = UIColor.white
         textLbl.frame = CGRect(x: 5, y: 5, width: 200, height: 30)
@@ -45,7 +45,7 @@ class LabelTextView: UIView, UITextViewDelegate{
         textLbl.textAlignment = .left
         addSubview(textLbl)
         
-        let tapGestureLabel: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LabelTextView.textLblTapGesture(_:)))
+        let tapGestureLabel: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LabelTextView.textLblDoubleTapGesture(_:)))
         tapGestureLabel.numberOfTapsRequired = 2
         textLbl.isUserInteractionEnabled = true
         textLbl.addGestureRecognizer(tapGestureLabel)
@@ -68,7 +68,7 @@ class LabelTextView: UIView, UITextViewDelegate{
         topLeftBtn.layer.cornerRadius = topLeftBtn.frame.size.width / 2
         topLeftBtn.layer.backgroundColor = UIColor.white.cgColor
         topLeftBtn.layer.borderWidth = 1
-        topLeftBtn.isHidden = false
+        topLeftBtn.isHidden = true
         topLeftBtn.isUserInteractionEnabled = true
         topLeftBtn.addGestureRecognizer(panTopLeftBtn)
         
@@ -83,7 +83,7 @@ class LabelTextView: UIView, UITextViewDelegate{
         topRightBtn.layer.cornerRadius = topRightBtn.frame.size.width / 2
         topRightBtn.layer.backgroundColor = UIColor.white.cgColor
         topRightBtn.layer.borderWidth = 1
-        topRightBtn.isHidden = false
+        topRightBtn.isHidden = true
         topRightBtn.isUserInteractionEnabled = true
         topRightBtn.addGestureRecognizer(panTopRightBtn)
         
@@ -98,7 +98,7 @@ class LabelTextView: UIView, UITextViewDelegate{
         botRightBtn.layer.cornerRadius = botRightBtn.frame.size.width / 2
         botRightBtn.layer.backgroundColor = UIColor.white.cgColor
         botRightBtn.layer.borderWidth = 1
-        botRightBtn.isHidden = false
+        botRightBtn.isHidden = true
         botRightBtn.isUserInteractionEnabled = true
         botRightBtn.addGestureRecognizer(panBotRightBtn)
         
@@ -113,7 +113,7 @@ class LabelTextView: UIView, UITextViewDelegate{
         botLeftBtn.layer.cornerRadius = botLeftBtn.frame.size.width / 2
         botLeftBtn.layer.backgroundColor = UIColor.white.cgColor
         botLeftBtn.layer.borderWidth = 1
-        botLeftBtn.isHidden = false
+        botLeftBtn.isHidden = true
         botLeftBtn.isUserInteractionEnabled = true
         botLeftBtn.addGestureRecognizer(panBotLeftBtn)
         
@@ -142,9 +142,6 @@ class LabelTextView: UIView, UITextViewDelegate{
             self.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y - translation.y)
             self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
         }
-        textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
-        textView.frame = textLbl.frame
-        
         setFontLabel()
     }
     
@@ -163,9 +160,6 @@ class LabelTextView: UIView, UITextViewDelegate{
             self.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y - translation.y)
             self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height + translation.y + topLeftBtn.frame.size.height)
         }
-        textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
-        textView.frame = textLbl.frame
-        
         setFontLabel()
     }
     
@@ -183,9 +177,6 @@ class LabelTextView: UIView, UITextViewDelegate{
             self.frame.origin = CGPoint(x: self.frame.origin.x + translation.x, y: self.frame.origin.y)
             self.frame.size = CGSize(width: textLbl.frame.size.width + translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
         }
-        textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
-        textView.frame = textLbl.frame
-        
         setFontLabel()
     }
     
@@ -205,15 +196,16 @@ class LabelTextView: UIView, UITextViewDelegate{
             self.frame.origin = CGPoint(x: self.frame.origin.x + translation.x, y: self.frame.origin.y)
             self.frame.size = CGSize(width: textLbl.frame.size.width - translation.x + topLeftBtn.frame.size.width, height: textLbl.frame.size.height - translation.y + topLeftBtn.frame.size.height)
         }
-        textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
-        textView.frame = textLbl.frame
-        
         setFontLabel()
     }
     
     func setFontLabel() {
-        let width = frame.size.width - textLbl.font.pointSize
-        let height = frame.size.height - textLbl.font.pointSize
+        textView.frame = textLbl.frame
+        textLbl.frame.size = CGSize(width: self.frame.size.width - 10, height: self.frame.size.height - 10)
+        
+        let markerSize: CGFloat = 25
+        let width = frame.size.width - markerSize
+        let height = frame.size.height - markerSize
         var fontSize: CGFloat = 200
         let minFontSize: CGFloat = 5
         let constrainSize = CGSize(width: width, height: CGFloat(MAXFLOAT))
@@ -228,7 +220,7 @@ class LabelTextView: UIView, UITextViewDelegate{
         textLbl.center = CGPoint(x: frame.width/2, y: frame.height/2)
     }
     
-    func textLblTapGesture(_ sender: UITapGestureRecognizer) {
+    func textLblDoubleTapGesture(_ sender: UITapGestureRecognizer) {
         textLbl.isHidden = true
         textView.isHidden = false
         textView.becomeFirstResponder()
@@ -239,17 +231,17 @@ class LabelTextView: UIView, UITextViewDelegate{
         botLeftBtn.isHidden = true
     }
     
-    func textViewDidEndEditing(_ textView: UITextView) {
-        textLbl.isHidden = false
-        textView.isHidden = true
-        if textView.text != "" {
-            textLbl.text = textView.text
-        } else {
-            textLbl.text = "Double tap to quote"
-        }
-        topLeftBtn.isHidden = false
-        topRightBtn.isHidden = false
-        botRightBtn.isHidden = false
-        botLeftBtn.isHidden = false
-    }
+//    func textViewDidEndEditing(_ textView: UITextView) {
+//        textLbl.isHidden = false
+//        textView.isHidden = true
+//        if textView.text != "" {
+//            textLbl.text = textView.text
+//        } else {
+//            textLbl.text = "Double tap to quote"
+//        }
+////        topLeftBtn.isHidden = false
+////        topRightBtn.isHidden = false
+////        botRightBtn.isHidden = false
+////        botLeftBtn.isHidden = false
+//    }
 }

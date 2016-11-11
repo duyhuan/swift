@@ -9,11 +9,17 @@
 import UIKit
 import Social
 
+enum QBLBackgroundType: String{
+    case Color
+    case Pattern
+    case Image
+}
+
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var arrBackgroundColor: [BackgroundColorModel] = []
     let imagePicker = UIImagePickerController()
-    let arrFont: [String] = UIFont.familyNames
+    var arrFont: [FontModel] = []
     let tapOnImgViewToHiddenColBackGroundGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     let selectedBackgroundColor: UIImageView = UIImageView()
     let selectedPattern: UIImageView = UIImageView()
@@ -31,7 +37,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var arrImagePatternBundleThumb: [UIImage] = []
     var arrImageBackgroundTemplateBundleThumb: [UIImage] = []
     
-    var indexItem = [IndexPath]() {
+//    var indexItem = [IndexPath]() {
+//        didSet {
+//            colViewBackground.reloadData()
+//        }
+//    }
+
+    var backgroundType: QBLBackgroundType = .Color {
         didSet {
             colViewBackground.reloadData()
         }
@@ -59,7 +71,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         getPatternFromBundleThumbs()
         getBackgroundTemplateFromBundleThumbs()
         getPatternFromBundleImages()
@@ -72,6 +83,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         colViewBackground.backgroundColor = UIColor.darkGray
         colViewBackground.isHidden = true
         arrBackgroundColorAppend()
+        arrFontAppend()
         
         colFont.delegate = self
         colFont.dataSource = self
@@ -153,14 +165,15 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         if collectionView == colFont {
             return arrFont.count
         } else {
-            if indexItem.first == nil {
-                return 0
-            }
-            if (indexItem.first as NSIndexPath?)?.row == 0 {
+//            if indexItem.first == nil {
+//                return 0
+//            }
+            //colViewBackground.reloadData()
+            if backgroundType == .Color { //(indexItem.first as NSIndexPath?)?.row == 0 {
                 return arrBackgroundColor.count
-            } else if (indexItem.first as NSIndexPath?)?.row == 1 {
+            } else if backgroundType == .Pattern  { //(indexItem.first as NSIndexPath?)?.row == 1 {
                 return arrImagePatternBundleImages.count
-            } else if (indexItem.first as NSIndexPath?)?.row == 2 {
+            } else if backgroundType == .Image { //(indexItem.first as NSIndexPath?)?.row == 2 {
                 return arrImageBackgroundTemplateBundleImages.count
             } else {
                 return 0
@@ -172,11 +185,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         if collectionView == colFont {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! FontCollectionViewCell
             cell.frame.size.width = colFont.frame.size.width / 3
-            cell.lblFont.text = arrFont[(indexPath as NSIndexPath).row]
+            let data = arrFont[(indexPath as NSIndexPath).row]
+            cell.lblFont.text = data.listFont as String?
             
             if cell.lblFont.text!.characters.count > 10 {
                 cell.lblFont.text = (cell.lblFont.text! as NSString).substring(to: 10)
-                cell.lblFont.font = UIFont(name: arrFont[(indexPath as NSIndexPath).row], size: (cell.lblFont.font?.pointSize)!)
+                let data = arrFont[(indexPath as NSIndexPath).row]
+                cell.lblFont.font = UIFont(name: data.listFont as String, size: (cell.lblFont.font?.pointSize)!)
             }
             
             if indexFont.index(of: indexPath) == nil {
@@ -188,13 +203,14 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! BackgroundCollectionViewCell
-            if (indexItem.first as NSIndexPath?)?.row == 0 {
+            if backgroundType == .Color {//(indexItem.first as NSIndexPath?)?.row == 0 {
                 let data = arrBackgroundColor[(indexPath as NSIndexPath).row]
                 cell.bgColorImage.image = nil
                 cell.bgColorImage.backgroundColor = data.bgroundColor
                 cell.bgColorImage.layer.borderColor = UIColor.white.cgColor
                 cell.bgColorImage.layer.borderWidth = 1
-            } else if (indexItem.first! as NSIndexPath).row == 1 {
+
+            } else if backgroundType == .Pattern {//(indexItem.first! as NSIndexPath).row == 1 {
                 cell.bgColorImage.image = nil
                 cell.bgColorImage.backgroundColor = nil
                 cell.bgColorImage.image = arrImagePatternBundleThumb[indexPath.row]
@@ -203,7 +219,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 //                let imgData: NSData = NSData(data: UIImageJPEGRepresentation(cell.bgColorImage.image!, 1)!)
 //                let imageSize: Int = imgData.length
 //                print("size of image in KB: %f ", imageSize / 1024)
-            } else if (indexItem.first as NSIndexPath?)?.row == 2 {
+            } else if backgroundType == .Image {//(indexItem.first as NSIndexPath?)?.row == 2 {
                 cell.bgColorImage.image = nil
                 cell.bgColorImage.backgroundColor = nil
                 cell.bgColorImage.image = arrImageBackgroundTemplateBundleThumb[indexPath.row]
@@ -218,21 +234,22 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         if collectionView == colViewBackground {
-            if (indexItem.first as NSIndexPath?)?.row == 0 {
+            if backgroundType == .Color { //(indexItem.first as NSIndexPath?)?.row == 0 {
                 let data = arrBackgroundColor[(indexPath as NSIndexPath).row]
                 imgView.backgroundColor = data.bgroundColor
                 btnBackroundColor.backgroundColor = data.bgroundColor
                 stSelectBackroundColor.setChosen(true)
                 stSelectPattern.setChosen(false)
                 stSelectBackgroundTemplate.setChosen(false)
-            } else if (indexItem.first as NSIndexPath?)?.row == 1 {
+            } else if backgroundType == .Pattern { //(indexItem.first as NSIndexPath?)?.row == 1 {
                 setImgViewBackground(arrImagePatternBundleImages[(indexPath as NSIndexPath).row])
                 btnPattern.setBackgroundImage(arrImagePatternBundleImages[indexPath.row], for: UIControlState())
                 stSelectPattern.setChosen(true)
                 stSelectBackroundColor.setChosen(false)
                 stSelectBackgroundTemplate.setChosen(false)
-            } else if (indexItem.first as NSIndexPath?)?.row == 2 {
+            } else if backgroundType == .Image {//(indexItem.first as NSIndexPath?)?.row == 2 {
                 setImgViewBackground(arrImageBackgroundTemplateBundleImages[(indexPath as NSIndexPath).row])
                 btnBackgroundTemplate.setBackgroundImage(arrImageBackgroundTemplateBundleImages[indexPath.row], for: UIControlState())
                 stSelectBackgroundTemplate.setChosen(true)
@@ -246,20 +263,28 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             for i in 0..<arrLblTextView.count {
                 let lbltv = arrLblTextView[i] as! LabelTextView
                 if lbltv.tag == 1 {
-                    lbltv.textLbl.font = UIFont(name: arrFont[indexPath.row], size: lblTextView.textLbl.font.pointSize)
+                    let data = arrFont[indexPath.row]
+                    lbltv.textLbl.font = UIFont(name: data.listFont as String, size: lblTextView.textLbl.font.pointSize)
                 }
             }
         }
     }
     
     // MARK: Actions
+    var temp = 0
     @IBAction func btnAddTextClicked(_ sender: UIButton) {
         lblTextView = LabelTextView()
         lblTextView.frame.size = CGSize(width: 210, height: 40)
-        lblTextView.frame.origin = CGPoint(x: (imgView.frame.size.width - lblTextView.frame.size.width) / 2, y: (imgView.frame
-            .size.height - lblTextView.frame.size.height) / 2)
         imgView.addSubview(lblTextView)
-        
+        arrLblTextView.append(lblTextView)
+        temp += 1
+        if temp%3 == 1 {
+            lblTextView.frame.origin = CGPoint(x: (imgView.frame.size.width - lblTextView.frame.size.width) / 2 - 50, y: (imgView.frame.size.height - lblTextView.frame.size.height) / 2 - 50)
+        } else if temp%3 == 2 {
+            lblTextView.frame.origin = CGPoint(x: (imgView.frame.size.width - lblTextView.frame.size.width) / 2, y: (imgView.frame.size.height - lblTextView.frame.size.height) / 2)
+        } else if temp%3 == 0 {
+            lblTextView.frame.origin = CGPoint(x: (imgView.frame.size.width - lblTextView.frame.size.width) / 2 + 50, y: (imgView.frame.size.height - lblTextView.frame.size.height) / 2 + 50)
+        }
         let panGestureLblTextView: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ViewController.lblTextViewPangesture(_:)))
         lblTextView.textLbl.isUserInteractionEnabled = true
         lblTextView.addGestureRecognizer(panGestureLblTextView)
@@ -267,7 +292,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         let tapGestureLblTextView: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.lblTextViewTapgesture(_:)))
         lblTextView.addGestureRecognizer(tapGestureLblTextView)
-        arrLblTextView.append(lblTextView)
     }
     
     func lblTextViewPangesture(_ sender: UIPanGestureRecognizer) {
@@ -290,13 +314,15 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let point: CGPoint = sender.location(in: imgView)
         for i in 0..<arrLblTextView.count {
             let lbltv = arrLblTextView[i] as! LabelTextView
+            lbltv.topLeftBtn.isHidden = true
+            lbltv.topRightBtn.isHidden = true
+            lbltv.botRightBtn.isHidden = true
+            lbltv.botLeftBtn.isHidden = true
+            lbltv.textLbl.layer.borderWidth = 0
             if lbltv.textView.isHidden == false {
                 lbltv.textView.isHidden = true
                 lbltv.textLbl.isHidden = false
-                lbltv.topLeftBtn.isHidden = false
-                lbltv.topRightBtn.isHidden = false
-                lbltv.botRightBtn.isHidden = false
-                lbltv.botLeftBtn.isHidden = false
+                
                 if lbltv.textView.text != "" {
                     lbltv.textLbl.text = lbltv.textView.text
                 } else {
@@ -304,9 +330,15 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 }
             }
             lbltv.tag = 0
+            
             if lbltv.frame.contains(point) {
                 lbltv.tag = 1
                 slider.value = Float(lbltv.textLbl.font.pointSize)
+                lbltv.topLeftBtn.isHidden = false
+                lbltv.topRightBtn.isHidden = false
+                lbltv.botRightBtn.isHidden = false
+                lbltv.botLeftBtn.isHidden = false
+                lbltv.textLbl.layer.borderWidth = 1
             }
         }
     }
@@ -319,13 +351,14 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func imgViewTapGesture(_ sender: UITapGestureRecognizer) {
         for i in 0..<arrLblTextView.count {
             let lbltv = arrLblTextView[i] as! LabelTextView
+            lbltv.textLbl.layer.borderWidth = 0
+            lbltv.topLeftBtn.isHidden = true
+            lbltv.topRightBtn.isHidden = true
+            lbltv.botRightBtn.isHidden = true
+            lbltv.botLeftBtn.isHidden = true
             if lbltv.textView.isHidden == false {
                 lbltv.textView.isHidden = true
                 lbltv.textLbl.isHidden = false
-                lbltv.topLeftBtn.isHidden = false
-                lbltv.topRightBtn.isHidden = false
-                lbltv.botRightBtn.isHidden = false
-                lbltv.botLeftBtn.isHidden = false
                 if lbltv.textView.text != "" {
                     lbltv.textLbl.text = lbltv.textView.text
                 } else {
@@ -337,7 +370,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func setupSlider() {
         slider.minimumValue = 5.0
-        slider.maximumValue = 50.0
+        slider.maximumValue = 100.0
         slider.value = 10.0
         slider.setThumbImage(UIImage(named: "CP_Point"), for: UIControlState())
     }
@@ -368,15 +401,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
-    @IBAction func btnBackroundColorClicked(_ sender: UIButton) {
-        indexItem.removeAll()
-        indexItem.append(IndexPath(row: 0, section: 0))
-        colViewBackground.isHidden = false
-    }
-    
     @IBAction func btnShareOnFaceClicked(_ sender: UIButton) {
         if imgView.image != nil {
-            
             let lblLogo: UILabel = UILabel()
             lblLogo.translatesAutoresizingMaskIntoConstraints = false
             lblLogo.autoresizesSubviews = false
@@ -407,17 +433,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             lblLogo.removeFromSuperview()
             for i in 0..<arrLblTextView.count {
                 let lbltv = arrLblTextView[i] as! LabelTextView
-                lbltv.topLeftBtn.isHidden = false
-                lbltv.topRightBtn.isHidden = false
-                lbltv.botRightBtn.isHidden = false
-                lbltv.botLeftBtn.isHidden = false
-                lbltv.textLbl.layer.borderWidth = 1
                 lbltv.isHidden = false
             }
             
             let composeSheet = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
             composeSheet?.add(imageSave)
             present(composeSheet!, animated: true, completion: nil)
+        } else {
+            let alert = UIAlertController(title: "No photos will be selected", message: "Please select any image", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
@@ -441,15 +466,24 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         viewButton.addSubview(stSelectBackgroundTemplate)
     }
     
+    @IBAction func btnBackroundColorClicked(_ sender: UIButton) {
+        //indexItem.removeAll()
+        //indexItem.append(IndexPath(row: 0, section: 0))
+        backgroundType = QBLBackgroundType.Color
+        colViewBackground.isHidden = false
+    }
+    
     @IBAction func btnPatternClicked(_ sender: UIButton) {
-        indexItem.removeAll()
-        indexItem.append(IndexPath(row: 1, section: 0))
+        //indexItem.removeAll()
+        //indexItem.append(IndexPath(row: 1, section: 0))
+        backgroundType = QBLBackgroundType.Pattern
         colViewBackground.isHidden = false
     }
     
     @IBAction func btnBackgroundTemplateClicked(_ sender: UIButton) {
-        indexItem.removeAll()
-        indexItem.append(IndexPath(row: 2, section: 0))
+        //indexItem.removeAll()
+        //indexItem.append(IndexPath(row: 2, section: 0))
+        backgroundType = QBLBackgroundType.Image
         colViewBackground.isHidden = false
     }
     
@@ -544,6 +578,23 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.orange))
         arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.purple))
         arrBackgroundColor.append(BackgroundColorModel.init(bgColor: UIColor.brown))
+    }
+    
+    func arrFontAppend() {
+        arrFont.append(FontModel.init(listFont: "Copperplate"))
+        arrFont.append(FontModel.init(listFont: "Heiti SC"))
+        arrFont.append(FontModel.init(listFont: "Avenir"))
+        arrFont.append(FontModel.init(listFont: "Thonburi"))
+        arrFont.append(FontModel.init(listFont: "Heiti TC"))
+        arrFont.append(FontModel.init(listFont: "Courier New"))
+        arrFont.append(FontModel.init(listFont: "Gill Sans"))
+        arrFont.append(FontModel.init(listFont: "Marker Felt"))
+        arrFont.append(FontModel.init(listFont: "Gurmukhi MN"))
+        arrFont.append(FontModel.init(listFont: "Georgia"))
+        arrFont.append(FontModel.init(listFont: "Kailasa"))
+        arrFont.append(FontModel.init(listFont: "Damascus"))
+        arrFont.append(FontModel.init(listFont: "Noteworthy"))
+        arrFont.append(FontModel.init(listFont: "Geeza Pro"))
     }
 }
 
