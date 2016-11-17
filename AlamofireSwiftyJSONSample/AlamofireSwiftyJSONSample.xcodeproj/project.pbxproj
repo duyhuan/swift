@@ -9,24 +9,28 @@
 /* Begin PBXBuildFile section */
 		0A5D44921654A053016BD623 /* Pods_AlamofireSwiftyJSONSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36C3F7F6FDB840FB444577AA /* Pods_AlamofireSwiftyJSONSample.framework */; };
 		33079BCD1DDAE170001F1334 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33079BCC1DDAE170001F1334 /* AppDelegate.swift */; };
-		33079BCF1DDAE170001F1334 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33079BCE1DDAE170001F1334 /* ViewController.swift */; };
+		33079BCF1DDAE170001F1334 /* SigninViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33079BCE1DDAE170001F1334 /* SigninViewController.swift */; };
 		33079BD21DDAE170001F1334 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33079BD01DDAE170001F1334 /* Main.storyboard */; };
 		33079BD41DDAE170001F1334 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33079BD31DDAE170001F1334 /* Assets.xcassets */; };
 		33079BD71DDAE170001F1334 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33079BD51DDAE170001F1334 /* LaunchScreen.storyboard */; };
 		33AD03E61DDAE6E300F54DA0 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33AD03E51DDAE6E300F54DA0 /* Alamofire.framework */; };
+		33AD040A1DDD46AF00F54DA0 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AD04091DDD46AF00F54DA0 /* SignupViewController.swift */; };
+		33AD040C1DDD721400F54DA0 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AD040B1DDD721400F54DA0 /* Route.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1B96758A962BAE1F46484101 /* Pods-AlamofireSwiftyJSONSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AlamofireSwiftyJSONSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AlamofireSwiftyJSONSample/Pods-AlamofireSwiftyJSONSample.debug.xcconfig"; sourceTree = "<group>"; };
 		33079BC91DDAE170001F1334 /* AlamofireSwiftyJSONSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlamofireSwiftyJSONSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		33079BCC1DDAE170001F1334 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		33079BCE1DDAE170001F1334 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		33079BCE1DDAE170001F1334 /* SigninViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninViewController.swift; sourceTree = "<group>"; };
 		33079BD11DDAE170001F1334 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		33079BD31DDAE170001F1334 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		33079BD61DDAE170001F1334 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		33079BD81DDAE171001F1334 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		33AD03E51DDAE6E300F54DA0 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = "../../../../Library/Developer/Xcode/DerivedData/AlamofireSwiftyJSONSample-engeypsqtwwifjffjxikhjztjahg/Build/Products/Debug-iphonesimulator/Alamofire/Alamofire.framework"; sourceTree = "<group>"; };
 		33AD03E71DDAE70000F54DA0 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = "../../../../Library/Developer/Xcode/DerivedData/AlamofireSwiftyJSONSample-engeypsqtwwifjffjxikhjztjahg/Build/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework"; sourceTree = "<group>"; };
+		33AD04091DDD46AF00F54DA0 /* SignupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
+		33AD040B1DDD721400F54DA0 /* Route.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		36C3F7F6FDB840FB444577AA /* Pods_AlamofireSwiftyJSONSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AlamofireSwiftyJSONSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		44269571D109CC0EC740FE0C /* Pods-AlamofireSwiftyJSONSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AlamofireSwiftyJSONSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-AlamofireSwiftyJSONSample/Pods-AlamofireSwiftyJSONSample.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,11 +70,13 @@
 			isa = PBXGroup;
 			children = (
 				33079BCC1DDAE170001F1334 /* AppDelegate.swift */,
-				33079BCE1DDAE170001F1334 /* ViewController.swift */,
+				33079BCE1DDAE170001F1334 /* SigninViewController.swift */,
 				33079BD01DDAE170001F1334 /* Main.storyboard */,
 				33079BD31DDAE170001F1334 /* Assets.xcassets */,
 				33079BD51DDAE170001F1334 /* LaunchScreen.storyboard */,
 				33079BD81DDAE171001F1334 /* Info.plist */,
+				33AD04091DDD46AF00F54DA0 /* SignupViewController.swift */,
+				33AD040B1DDD721400F54DA0 /* Route.swift */,
 			);
 			path = AlamofireSwiftyJSONSample;
 			sourceTree = "<group>";
@@ -218,7 +224,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				33079BCF1DDAE170001F1334 /* ViewController.swift in Sources */,
+				33AD040A1DDD46AF00F54DA0 /* SignupViewController.swift in Sources */,
+				33AD040C1DDD721400F54DA0 /* Route.swift in Sources */,
+				33079BCF1DDAE170001F1334 /* SigninViewController.swift in Sources */,
 				33079BCD1DDAE170001F1334 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
