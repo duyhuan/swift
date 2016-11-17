@@ -17,6 +17,7 @@ class SigninViewController: UIViewController {
     @IBOutlet var password: UITextField!
     @IBOutlet var btnLogin: UIButton!
     @IBOutlet var lblSignup: UILabel!
+    @IBOutlet var lblCP: UILabel!
     var json: JSON = nil
     var error: String? = nil
     
@@ -24,8 +25,10 @@ class SigninViewController: UIViewController {
         super.viewDidLoad()
         btnLogin.layer.cornerRadius = 5
         lblSignup.isUserInteractionEnabled = true
+        lblCP.isUserInteractionEnabled = true
         
-        customLabel()
+        customLabel(str: "Don't have an account? #<li>Sign up#", label: lblSignup)
+        customLabel(str: "By create an account, you accept #<li>Company's Terms of Use# and #<lu>Privacy Policy#", label: lblCP)
     }
     
     func alert(title1: String, title2: String, message: String) {
@@ -54,8 +57,8 @@ class SigninViewController: UIViewController {
         }
     }
     
-    func customLabel(){
-        let str = "Don't have an account? #<li>Sign up#"
+    func customLabel(str: String, label: UILabel){
+        let str = str
         let strPieces = str.components(separatedBy: "#")
         var ptWordLocation = CGPoint(x: 0.0, y: 0.0)
         if (strPieces.count > 1) {
@@ -64,18 +67,34 @@ class SigninViewController: UIViewController {
                 //Check for empty string
                 if (s.isEmpty == false) {
                     let lbl = UILabel()
+                    lbl.textAlignment = .center
                     lbl.textColor = UIColor(colorLiteralRed: 111/255, green: 126/255, blue: 148/255, alpha: 1)
                     lbl.isUserInteractionEnabled = s.contains("<li>")
                     lbl.text = s.replacingOccurrences(of: "<li>", with: "")
                     if (s.contains("<li>")) {
                         lbl.textColor = UIColor.white
                         //Set tap gesture for this clickable text:
-                        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(SigninViewController.tapOn(_:)))
-                        gesture.minimumPressDuration = 0.001
-                        lbl.addGestureRecognizer(gesture)
+                        if label == lblSignup {
+                            let gesture = UILongPressGestureRecognizer(target: self, action: #selector(SigninViewController.tapOnToShowSignup(_:)))
+                            gesture.minimumPressDuration = 0.001
+                            lbl.addGestureRecognizer(gesture)
+                        } else {
+                            let gesture = UILongPressGestureRecognizer(target: self, action: #selector(SigninViewController.tapOnToShowTerms(_:)))
+                            gesture.minimumPressDuration = 0.001
+                            lbl.addGestureRecognizer(gesture)
+                        }
+                    } else {
+                        lbl.isUserInteractionEnabled = s.contains("<lu>")
+                        lbl.text = s.replacingOccurrences(of: "<lu>", with: "")
+                        if (s.contains("<lu>")) {
+                            lbl.textColor = UIColor.white
+                            //Set tap gesture for this clickable text:
+                            let gesture = UILongPressGestureRecognizer(target: self, action: #selector(SigninViewController.tapOnToShowPrivacyPolicy(_:)))
+                            gesture.minimumPressDuration = 0.001
+                            lbl.addGestureRecognizer(gesture)
+                        }
                     }
                     lbl.sizeToFit()
-                    
                     //Lay out the labels so it forms a complete sentence again
                     if (self.view.frame.width < ptWordLocation.x + lbl.bounds.size.width) {
                         ptWordLocation.x = 0.0
@@ -83,7 +102,8 @@ class SigninViewController: UIViewController {
                         lbl.text = lbl.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                     }
                     lbl.frame = CGRect(x: ptWordLocation.x, y: ptWordLocation.y, width: lbl.frame.size.width, height: lbl.frame.size.height)
-                    self.lblSignup.addSubview(lbl)
+                    lbl.textAlignment = .center
+                    label.addSubview(lbl)
                     //Update the horizontal width
                     ptWordLocation.x += lbl.frame.size.width
                 }
@@ -91,7 +111,7 @@ class SigninViewController: UIViewController {
         }
     }
     
-    func tapOn(_ recognizer : UILongPressGestureRecognizer){
+    func tapOnToShowSignup(_ recognizer : UILongPressGestureRecognizer){
         if let label = recognizer.view as? UILabel {
             if recognizer.state == .began {
                 label.textColor = UIColor.lightGray
@@ -99,7 +119,33 @@ class SigninViewController: UIViewController {
                 present(signupVC!, animated: true, completion: nil)
             }
             if recognizer.state == .ended {
-                label.textColor = UIColor.white
+                //label.textColor = UIColor.white
+            }
+        }
+    }
+    
+    func tapOnToShowTerms(_ recognizer : UILongPressGestureRecognizer){
+        if let label = recognizer.view as? UILabel {
+            if recognizer.state == .began {
+                label.textColor = UIColor.lightGray
+                let termsVC = storyboard?.instantiateViewController(withIdentifier: "TermsVC")
+                present(termsVC!, animated: true, completion: nil)
+            }
+            if recognizer.state == .ended {
+                //label.textColor = UIColor.white
+            }
+        }
+    }
+    
+    func tapOnToShowPrivacyPolicy(_ recognizer : UILongPressGestureRecognizer){
+        if let label = recognizer.view as? UILabel {
+            if recognizer.state == .began {
+                label.textColor = UIColor.lightGray
+                let privacyPolicyVC = storyboard?.instantiateViewController(withIdentifier: "PrivacyPolicyVC")
+                present(privacyPolicyVC!, animated: true, completion: nil)
+            }
+            if recognizer.state == .ended {
+                //label.textColor = UIColor.white
             }
         }
     }

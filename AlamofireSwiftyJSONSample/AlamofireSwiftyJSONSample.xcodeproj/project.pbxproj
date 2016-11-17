@@ -16,6 +16,10 @@
 		33AD03E61DDAE6E300F54DA0 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33AD03E51DDAE6E300F54DA0 /* Alamofire.framework */; };
 		33AD040A1DDD46AF00F54DA0 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AD04091DDD46AF00F54DA0 /* SignupViewController.swift */; };
 		33AD040C1DDD721400F54DA0 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AD040B1DDD721400F54DA0 /* Route.swift */; };
+		33AD040E1DDDA37600F54DA0 /* TermsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AD040D1DDDA37600F54DA0 /* TermsViewController.swift */; };
+		33AD04101DDDA3E200F54DA0 /* privacyPolicy.html in Resources */ = {isa = PBXBuildFile; fileRef = 33AD040F1DDDA3E200F54DA0 /* privacyPolicy.html */; };
+		33AD04121DDDA3E900F54DA0 /* terms.html in Resources */ = {isa = PBXBuildFile; fileRef = 33AD04111DDDA3E900F54DA0 /* terms.html */; };
+		33AD04141DDDA4FA00F54DA0 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AD04131DDDA4FA00F54DA0 /* PrivacyPolicyViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +35,10 @@
 		33AD03E71DDAE70000F54DA0 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = "../../../../Library/Developer/Xcode/DerivedData/AlamofireSwiftyJSONSample-engeypsqtwwifjffjxikhjztjahg/Build/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework"; sourceTree = "<group>"; };
 		33AD04091DDD46AF00F54DA0 /* SignupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		33AD040B1DDD721400F54DA0 /* Route.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
+		33AD040D1DDDA37600F54DA0 /* TermsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsViewController.swift; sourceTree = "<group>"; };
+		33AD040F1DDDA3E200F54DA0 /* privacyPolicy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = privacyPolicy.html; sourceTree = "<group>"; };
+		33AD04111DDDA3E900F54DA0 /* terms.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = terms.html; sourceTree = "<group>"; };
+		33AD04131DDDA4FA00F54DA0 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		36C3F7F6FDB840FB444577AA /* Pods_AlamofireSwiftyJSONSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AlamofireSwiftyJSONSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		44269571D109CC0EC740FE0C /* Pods-AlamofireSwiftyJSONSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AlamofireSwiftyJSONSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-AlamofireSwiftyJSONSample/Pods-AlamofireSwiftyJSONSample.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +85,10 @@
 				33079BD81DDAE171001F1334 /* Info.plist */,
 				33AD04091DDD46AF00F54DA0 /* SignupViewController.swift */,
 				33AD040B1DDD721400F54DA0 /* Route.swift */,
+				33AD040D1DDDA37600F54DA0 /* TermsViewController.swift */,
+				33AD04131DDDA4FA00F54DA0 /* PrivacyPolicyViewController.swift */,
+				33AD04111DDDA3E900F54DA0 /* terms.html */,
+				33AD040F1DDDA3E200F54DA0 /* privacyPolicy.html */,
 			);
 			path = AlamofireSwiftyJSONSample;
 			sourceTree = "<group>";
@@ -166,6 +178,8 @@
 				33079BD71DDAE170001F1334 /* LaunchScreen.storyboard in Resources */,
 				33079BD41DDAE170001F1334 /* Assets.xcassets in Resources */,
 				33079BD21DDAE170001F1334 /* Main.storyboard in Resources */,
+				33AD04121DDDA3E900F54DA0 /* terms.html in Resources */,
+				33AD04101DDDA3E200F54DA0 /* privacyPolicy.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,7 +241,9 @@
 				33AD040A1DDD46AF00F54DA0 /* SignupViewController.swift in Sources */,
 				33AD040C1DDD721400F54DA0 /* Route.swift in Sources */,
 				33079BCF1DDAE170001F1334 /* SigninViewController.swift in Sources */,
+				33AD04141DDDA4FA00F54DA0 /* PrivacyPolicyViewController.swift in Sources */,
 				33079BCD1DDAE170001F1334 /* AppDelegate.swift in Sources */,
+				33AD040E1DDDA37600F54DA0 /* TermsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
